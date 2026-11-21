@@ -121,7 +121,6 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 ├── aviso-legal.html               # Aviso legal
 ├── sobre-nosotros.html            # Sobre el proyecto
 ├── contacto.html                  # Contacto
-├── recomendaciones.html           # Recomendaciones priorizadas del proyecto
 ├── novedades.html                 # Cambios recientes del proyecto
 ├── ads.txt                        # Declaración de publicador de AdSense
 ├── robots.txt                     # Instrucciones para rastreadores
@@ -131,7 +130,6 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │   ├── hub.css                    # Estilos del hub, tarjetas y fondo estelar
 │   ├── consent.css                # Banner de cookies y pie legal compartido
 │   ├── legal.css                  # Estilos de las páginas informativas
-│   ├── recomendaciones.css        # Tarjetas de recomendaciones
 │   └── novedades.css              # Entradas de la sección de novedades
 ├── js/
 │   ├── hub.js                     # Fondo animado y atajos 1/2/3/4/5
@@ -305,28 +303,9 @@ docker compose up -d --build
 - `HEALTHCHECK` consulta `/healthz`.
 - Recursos 100 % locales: sin CDN, sin fuentes externas, funciona offline tras el primer arranque.
 
-## Recomendaciones
-
-`recomendaciones.html` reúne diez acciones priorizadas para el proyecto,
-ordenadas en cuatro bloques: antes de publicar, calidad y confianza,
-retención y balance, y SEO/accesibilidad. El hub enlaza la página desde un
-teaser compacto y el pie legal de todas las rutas incluye el mismo enlace.
-
-Las prioridades son: dominio e ID de publicador (bloqueante), consentimiento
-y CSP estricta (alta), balance de Serpiente y récord visible en el hub (media),
-y SEO, accesibilidad y pruebas de layout (baja). Es contenido interno del
-proyecto: no modifica la configuración de monetización ni activa anuncios.
-
-Quedan implementadas la revisión de consentimiento, la CSP estricta, la
-instrumentación local de Serpiente (`?debug` y
-`window.__serpiente.metrics()`), el mejor marcador en el hub, la sección de
-novedades, los `aria-live` en marcadores y la medición de layout. Siguen
-pendientes el dominio y el ID de publicador: no se han inventado y los anuncios
-continúan desactivados.
-
 `novedades.html` recoge los cambios recientes (poderes de Serpiente, riel
-lateral de controles y hoja de ruta) con entradas breves y enlaces al resto del
-sitio.
+lateral de controles y récord visible en el salón) con entradas breves y
+enlaces al resto del sitio.
 
 ## Monetización con Google AdSense (preparada, desactivada)
 

@@ -27,7 +27,6 @@ TEXT_FILES = [
     "aviso-legal.html",
     "sobre-nosotros.html",
     "contacto.html",
-    "recomendaciones.html",
     "novedades.html",
 ]
 
