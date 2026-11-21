@@ -121,6 +121,7 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 ├── aviso-legal.html               # Aviso legal
 ├── sobre-nosotros.html            # Sobre el proyecto
 ├── contacto.html                  # Contacto
+├── recomendaciones.html           # Recomendaciones priorizadas del proyecto
 ├── ads.txt                        # Declaración de publicador de AdSense
 ├── robots.txt                     # Instrucciones para rastreadores
 ├── sitemap.xml                    # Mapa del sitio
@@ -128,7 +129,8 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 ├── css/
 │   ├── hub.css                    # Estilos del hub, tarjetas y fondo estelar
 │   ├── consent.css                # Banner de cookies y pie legal compartido
-│   └── legal.css                  # Estilos de las páginas informativas
+│   ├── legal.css                  # Estilos de las páginas informativas
+│   └── recomendaciones.css        # Tarjetas de recomendaciones
 ├── js/
 │   ├── hub.js                     # Fondo animado y atajos 1/2/3/4/5
 │   ├── ads-config.js              # Estado de monetización y ca-pub
@@ -301,6 +303,18 @@ docker compose up -d --build
 - `HEALTHCHECK` consulta `/healthz`.
 - Recursos 100 % locales: sin CDN, sin fuentes externas, funciona offline tras el primer arranque.
 
+## Recomendaciones
+
+`recomendaciones.html` reúne diez acciones priorizadas para el proyecto,
+ordenadas en cuatro bloques: antes de publicar, calidad y confianza,
+retención y balance, y SEO/accesibilidad. El hub enlaza la página desde un
+teaser compacto y el pie legal de todas las rutas incluye el mismo enlace.
+
+Las prioridades son: dominio e ID de publicador (bloqueante), consentimiento
+y CSP estricta (alta), balance de Serpiente y récord visible en el hub (media),
+y SEO, accesibilidad y pruebas de layout (baja). Es contenido interno del
+proyecto: no modifica la configuración de monetización ni activa anuncios.
+
 ## Monetización con Google AdSense (preparada, desactivada)
 
 El repositorio ya incluye todo lo que AdSense necesita para revisar el sitio:
@@ -382,9 +396,9 @@ python3 scripts/configure-ads.py \
   --enable
 ```
 
-El script actualiza `ads.txt`, `robots.txt`, `sitemap.xml`, las cinco páginas
-legales y `js/ads-config.js`. Vuelve a ejecutarlo sin `--enable` si quieres dejar
-los anuncios apagados.
+El script actualiza `ads.txt`, `robots.txt`, `sitemap.xml`, las seis páginas
+informativas y `js/ads-config.js`. Vuelve a ejecutarlo sin `--enable` si quieres
+dejar los anuncios apagados.
 
 ### 3. Publicar con la configuración de anuncios
 

@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#05060f" />
+    <meta name="robots" content="index,follow" />
+    <link rel="canonical" href="https://{{DOMINIO}}/recomendaciones.html" />
+    <meta
+      name="description"
+      content="Recomendaciones priorizadas para Playkora: publicación, AdSense, consentimiento, móvil, balance de Serpiente, SEO y privacidad."
+    />
+    <title>Recomendaciones · Playkora</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/legal.css" />
+    <link rel="stylesheet" href="css/recomendaciones.css" />
+    <link rel="stylesheet" href="css/consent.css" />
+    <script src="js/ads-config.js"></script>
+    <script src="js/consent.js"></script>
+  </head>
+  <body>
+    <div class="legal-shell">
+      <header class="legal-head">
+        <a class="legal-brand" href="./">Play<span>kora</span></a>
+        <a class="legal-back" href="./">&larr; Volver al salón</a>
+      </header>
+
+      <main class="legal-main">
+        <p class="legal-kicker">Hoja de ruta</p>
+        <h1>Recomendaciones para Playkora</h1>
+        <p class="legal-lead">
+          Estas son las acciones que yo priorizaría viendo el proyecto ya
+          terminado: cinco juegos originales, publicación en Docker, CSP
+          estricta, controles móviles a los lados, consentimiento y anuncios
+          simulados. No son fechas ni promesas: son pasos concretos, ordenados
+          por impacto, para sacar Playkora a producción y crecer sin sustos.
+        </p>
+
+        <h2>Resumen por prioridad</h2>
+        <div class="legal-table-wrap">
+          <table class="legal-table">
+            <thead>
+              <tr>
+                <th>Prioridad</th>
+                <th>Acción</th>
+                <th>Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><span class="rec-pill rec-pill--block">Bloqueante</span></td>
+                <td>Dominio e ID de publicador</td>
+                <td>Pendiente</td>
+              </tr>
+              <tr>
+                <td><span class="rec-pill rec-pill--high">Alta</span></td>
+                <td>Consentimiento y CSP estricta</td>
+                <td>Revisar / Hecho</td>
+              </tr>
+              <tr>
+                <td><span class="rec-pill rec-pill--mid">Media</span></td>
+                <td>Balance de Serpiente y récord en el hub</td>
+                <td>En seguimiento</td>
+              </tr>
+              <tr>
+                <td><span class="rec-pill rec-pill--low">Baja</span></td>
+                <td>SEO, accesibilidad y pruebas de layout</td>
+                <td>Parcial</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2>Antes de publicar</h2>
+        <ol class="rec-list">
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">01</span>
+              <h3 class="rec-item__title">Definir el dominio y sustituir los marcadores</h3>
+              <span class="rec-pill rec-pill--block">Bloqueante</span>
+              <span class="rec-status rec-status--pending">Pendiente</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              Los enlaces canónicos, el sitemap, <code>ads.txt</code> y las
+              páginas legales todavía usan <code>{{DOMINIO}}</code>. AdSense
+              necesita un dominio propio con HTTPS y contenido accesible.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Elige tu dominio y ejecuta
+              <code>python3 scripts/configure-ads.py --domain TU_DOMINIO</code>
+              (sin <code>--enable</code>). Después comprueba que no queda ningún
+              marcador y que <code>/</code>, <code>/sitemap.xml</code> y
+              <code>/ads.txt</code> responden 200.
+            </p>
+          </li>
+
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">02</span>
+              <h3 class="rec-item__title">Conseguir el ID de publicador y dejar los anuncios apagados</h3>
+              <span class="rec-pill rec-pill--block">Bloqueante</span>
+              <span class="rec-status rec-status--pending">Pendiente</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              <code>js/ads-config.js</code> tiene <code>enabled: false</code> y
+              <code>ca-pub-0000000000000000</code>. Cargar un SDK o pedir
+              anuncios antes de la aprobación puede dejar el sitio en revisión
+              indefinida.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Cuando Google apruebe el sitio, ejecuta
+              <code>python3 scripts/configure-ads.py --enable --publisher ca-pub-TU_ID</code>
+              y activa <code>nginx.ads.conf</code>. Hasta entonces, el hub sigue
+              ofreciendo vidas extra y recompensas con anuncios opcionales
+              simulados, sin SDK.
+            </p>
+          </li>
+        </ol>
+
+        <h2>Calidad y confianza</h2>
+        <ol class="rec-list">
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">03</span>
+              <h3 class="rec-item__title">Revisar el consentimiento en las once rutas</h3>
+              <span class="rec-pill rec-pill--high">Alta</span>
+              <span class="rec-status rec-status--watch">Revisar</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              <code>js/consent.js</code> ya guarda la elección en
+              <code>localStorage</code>, pero el banner y el botón
+              &laquo;Configurar cookies&raquo; deben funcionar igual en las cinco
+              máquinas y en las seis páginas informativas.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Abre cada ruta en una ventana nueva, acepta y rechaza, y confirma
+              que el botón vuelve a abrir el panel. No se pide ningún dato
+              personal para jugar.
+            </p>
+          </li>
+
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">04</span>
+              <h3 class="rec-item__title">Mantener la CSP estricta</h3>
+              <span class="rec-pill rec-pill--high">Alta</span>
+              <span class="rec-status rec-status--done">Hecho</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              <code>nginx.conf</code> permite solo <code>'self'</code> y no usa
+              <code>'unsafe-inline'</code>. Por eso los estilos van en archivos
+              externos y los juegos no usan <code>eval</code> ni scripts inline.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              No añadas atributos <code>style</code> ni etiquetas
+              <code>&lt;script&gt;</code> inline. Si activas
+              <code>nginx.ads.conf</code>, valida que la cabecera siga sin
+              <code>'unsafe-inline'</code>.
+            </p>
+          </li>
+        </ol>
+
+        <h2>Retención y balance</h2>
+        <ol class="rec-list">
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">05</span>
+              <h3 class="rec-item__title">Medir Serpiente antes de tocar sus números</h3>
+              <span class="rec-pill rec-pill--mid">Media</span>
+              <span class="rec-status rec-status--watch">Seguimiento</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              Ahora tiene diez poderes, combo x2/x3/x4, manzana temporizada de
+              6 s y revival con Fantasma desde 250 puntos. El Turbo duplica la
+              velocidad durante 5 s y la comida vale x3: es fácil que eclipse al
+              resto de poderes.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Con <code>?debug</code>, usa
+              <code>window.__serpiente.snapshot()</code> para ver la duración de
+              efectos y cuántas veces se activa el revival. Anótalo solo en local
+              y ajusta umbrales si una misma estrategia gana siempre.
+            </p>
+          </li>
+
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">06</span>
+              <h3 class="rec-item__title">Mostrar el mejor marcador en el hub</h3>
+              <span class="rec-pill rec-pill--mid">Media</span>
+              <span class="rec-status rec-status--watch">Recomendado</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              Cada juego guarda su récord en el dispositivo, pero el hub no lo
+              enseña. Sin ese número visible falta un motivo sencillo para volver.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Lee el mejor marcador al cargar <code>js/hub.js</code> y muéstralo
+              en cada tarjeta, sin enviarlo a ningún servidor.
+            </p>
+          </li>
+
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">07</span>
+              <h3 class="rec-item__title">Publicar novedades cortas</h3>
+              <span class="rec-pill rec-pill--mid">Media</span>
+              <span class="rec-status rec-status--watch">Recomendado</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              Con cinco juegos y seis páginas informativas el sitio es sólido
+              pero estático. Google valora contenido útil y actualizado.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Añade una sección &laquo;Novedades&raquo; con un texto breve por
+              cambio relevante —por ejemplo los poderes de Serpiente o el
+              rediseño móvil— y mantén esta página al día.
+            </p>
+          </li>
+        </ol>
+
+        <h2>SEO y accesibilidad</h2>
+        <ol class="rec-list">
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">08</span>
+              <h3 class="rec-item__title">Apuntar <code>robots.txt</code> al sitemap real</h3>
+              <span class="rec-pill rec-pill--low">Baja</span>
+              <span class="rec-status rec-status--watch">Parcial</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              El archivo ya existe, pero debe referenciar
+              <code>https://TU_DOMINIO/sitemap.xml</code> una vez definido el
+              dominio. Esta página ya está añadida al sitemap.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Actualiza <code>robots.txt</code> en el mismo commit en que
+              rellenes el dominio y confírmalo con <code>curl</code>.
+            </p>
+          </li>
+
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">09</span>
+              <h3 class="rec-item__title">Anunciar los marcadores a lectores de pantalla</h3>
+              <span class="rec-pill rec-pill--low">Baja</span>
+              <span class="rec-status rec-status--watch">Recomendado</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              El hub tiene atajos <code>1</code>–<code>5</code> y foco visible;
+              los marcadores de los juegos cambian rápido y no se anuncian.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Añade <code>aria-live="polite"</code> a los marcadores y revisa el
+              contraste de la leyenda de poderes en móvil.
+            </p>
+          </li>
+
+          <li class="rec-item">
+            <div class="rec-item__head">
+              <span class="rec-item__num">10</span>
+              <h3 class="rec-item__title">Repetir la medición de layout en cada cambio</h3>
+              <span class="rec-pill rec-pill--low">Baja</span>
+              <span class="rec-status rec-status--done">Hecho · repetir</span>
+            </div>
+            <p>
+              <span class="rec-item__label">Por qué</span>
+              El riel lateral de controles cabe en 320×867 y 1000×700, pero un
+              botón nuevo puede romper la regla de &laquo;sin scroll&raquo; en
+              escritorio.
+            </p>
+            <p>
+              <span class="rec-item__label">Acción</span>
+              Antes de publicar, mide ambos viewports y comprueba que no hay
+              desbordamiento horizontal ni errores en consola.
+            </p>
+          </li>
+        </ol>
+
+        <p class="legal-note">
+          Orden de ejecución: primero dominio e ID de publicador; después
+          consentimiento y CSP; y solo entonces balance y contenido. Los anuncios
+          siguen simulados y desactivados hasta que haya aprobación.
+        </p>
+
+        <footer class="legal-foot">
+          <p>&copy; Yvan Miguel Perez de la Rosa · {{DOMINIO}}</p>
+          <nav class="legal-links" aria-label="Información legal">
+            <a href="recomendaciones.html">Recomendaciones</a>
+            <a href="privacidad.html">Privacidad</a>
+            <a href="cookies.html">Cookies</a>
+            <a href="aviso-legal.html">Aviso legal</a>
+            <a href="sobre-nosotros.html">Sobre nosotros</a>
+            <a href="contacto.html">Contacto</a>
+            <button type="button" data-consent-open>Configurar cookies</button>
+          </nav>
+        </footer>
+      </main>
+    </div>
+
+    <script src="js/ads.js"></script>
+  </body>
+</html>
