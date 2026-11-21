@@ -1,14 +1,16 @@
 # Playkora · Docker + Web
 
-Hub arcade con cinco juegos originales jugables en el navegador:
+Hub arcade con cinco juegos originales y dos clásicos Freedoom jugables en el navegador:
 
 - **Prisma Asalto** — shooter de cristales con oleadas, escudos destructibles y un orbe errante.
 - **Serpiente de Poderes** — snake con manzanas de poder, trampas, combos y revive con fantasma.
 - **Cazaluces** — laberinto original con Chispa, cuatro sombras, sus cuatro estados y sus personalidades de IA.
 - **Mosaico Lunar** — puzzle de teselas que caen, con pieza fantasma, reserva y siete formas propias.
 - **Bastión Lumen** — tower defense con circuito curvo, tres torretas, mejoras, jefes cada cinco oleadas y recompensas simuladas.
+- **Freedoom Phase 1** (`freedoom1.wad`) — nueve mapas y tres episodios del primer capítulo de Freedom.
+- **Freedoom Phase 2** (`freedoom2.wad`) — treinta y dos mapas y jefes, la continuación de Freedom.
 
-Todo es estático (HTML5 Canvas + JavaScript, sin dependencias ni compilación) y se sirve con Nginx desde un contenedor Docker.
+Los cinco juegos originales son HTML5 Canvas + JavaScript sin dependencias. Los dos clásicos usan el motor Dwasm (PrBoom+ compilado a WebAssembly) con los WAD servidos desde el mismo contenedor. Todo se sirve con Nginx desde Docker.
 
 ## Arranque rápido
 
@@ -48,6 +50,8 @@ docker compose ps
 | `/games/cazaluces/` | Cazaluces |
 | `/games/mosaico-lunar/` | Mosaico Lunar |
 | `/games/bastion-lumen/` | Bastión Lumen |
+| `/games/freedoom/phase1/` | Freedoom Phase 1 (Freedoom 1) |
+| `/games/freedoom/phase2/` | Freedoom Phase 2 (Freedoom 2) |
 | `/serpiente-poderes.html` | Redirección compatible con la ruta antigua |
 
 ## Controles
@@ -132,7 +136,7 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │   ├── legal.css                  # Estilos de las páginas informativas
 │   └── novedades.css              # Entradas de la sección de novedades
 ├── js/
-│   ├── hub.js                     # Fondo animado y atajos 1/2/3/4/5
+│   ├── hub.js                     # Fondo animado y atajos 1–7
 │   ├── ads-config.js              # Estado de monetización y ca-pub
 │   ├── consent.js                 # Consent Mode v2 + banner
 │   └── ads.js                     # Cargador de Auto ads (desactivado por defecto)
@@ -186,6 +190,14 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │           ├── audio.js           # SFX sintetizados (Web Audio)
 │           ├── config.js          # Mapa, tablas de torres, oleadas y storage
 │           └── monetization.js    # Hooks onGameOver() / onRewardAction()
+│   └── freedoom/
+│       ├── phase1/index.html      # Pantalla de Freedoom Phase 1
+│       ├── phase2/index.html      # Pantalla de Freedoom Phase 2
+│       ├── css/freedoom.css       # Intro, estado y lienzo del motor
+│       ├── js/freedoom.js         # Descarga del WAD y arranque de Dwasm
+│       ├── engine/                # PrBoom+ WebAssembly (index.js/.wasm/.data)
+│       ├── wads/                  # freedoom1.wad y freedoom2.wad (28 MB c/u)
+│       └── docs/                  # Licencia y créditos de Freedoom
 ├── Dockerfile                     # nginx:1.27-alpine + validación de config
 ├── nginx.conf                     # Gzip, caché, CSP estricta y /healthz
 ├── nginx.ads.conf                 # Variante opt-in con CSP compatible con AdSense
@@ -198,6 +210,14 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 ### Sobre `serpiente-poderes`
 
 El juego se conserva tal cual, pero su `<style>` y `<script>` inline se movieron a `games/serpiente-poderes/css/styles.css` y `games/serpiente-poderes/js/game.js`. Así la CSP estricta (`style-src 'self'; script-src 'self'`) sigue activa sin `'unsafe-inline'` y los recursos se pueden cachear. El HTML antiguo en la raíz ahora es una redirección.
+
+### Sobre Freedoom
+
+Los dos IWAD del paquete `freedoom-0.13.0` se sirven desde `games/freedoom/wads/` y se cargan en el navegador con [Dwasm](https://github.com/GMH-Code/Dwasm), un motor PrBoom+ compilado a WebAssembly. Cada fase tiene su propia ruta y sección en el hub (`/games/freedoom/phase1/` y `/games/freedoom/phase2/`).
+
+`games/freedoom/js/freedoom.js` descarga el WAD del mismo origen, lo escribe en MEMFS y arranca el motor con `-iwad`. No hay CDN, ni scripts inline, ni `eval`: la CSP solo añade `'wasm-unsafe-eval'`, que permite compilar WebAssembly sin habilitar JavaScript dinámico. Los controles táctiles usan `oly.js` cuando el dispositivo es táctil.
+
+Freedoom se distribuye bajo licencia BSD; el motor Dwasm es GPL-2.0. Los textos de licencia y créditos están en `games/freedoom/docs/` y `games/freedoom/engine/`.
 
 ## Cómo se juega
 

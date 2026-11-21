@@ -8,7 +8,8 @@
 
   const cfg = window.PLAYKORA_ADS || {};
   const KEY = cfg.consentKey || 'playkora:consent';
-  const BASE = /^\/games\//.test(window.location.pathname) ? '../../' : '';
+  const depth = window.location.pathname.replace(/\/+$/, '').split('/').length - 1;
+  const BASE = '../'.repeat(Math.max(0, depth));
   const DEFAULT = Object.freeze({
     ad_storage: 'denied',
     analytics_storage: 'denied',

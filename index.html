@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#05060f" />
     <meta
       name="description"
-      content="Playkora: Prisma Asalto, Serpiente de Poderes, Cazaluces, Mosaico Lunar y Bastión Lumen, servidos desde un contenedor Docker con Nginx."
+      content="Playkora: cinco juegos originales y dos clásicos Freedoom, servidos desde un contenedor Docker con Nginx."
     />
     <title>Playkora</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -24,16 +24,16 @@
       <header class="hero">
         <p class="hero__eyebrow">
           <span class="hero__dot" aria-hidden="true"></span>
-          Salón recreativo · 5 máquinas en línea
+          Salón recreativo · 7 máquinas en línea
         </p>
         <h1 class="hero__title">Play<span>kora</span></h1>
         <p class="hero__text">
-          Cinco juegos originales, servidos desde el mismo contenedor.
-          Sin instalaciones: elige una máquina y pulsa jugar. Consigue vidas
-          extra y recompensas viendo anuncios opcionales.
+          Cinco juegos originales y dos clásicos Freedoom, servidos desde el
+          mismo contenedor. Sin instalaciones: elige una máquina y pulsa jugar.
+          Consigue vidas extra y recompensas viendo anuncios opcionales.
         </p>
         <dl class="hero__meta">
-          <div><dt>Juegos</dt><dd>05</dd></div>
+          <div><dt>Juegos</dt><dd>07</dd></div>
           <div><dt>Offline</dt><dd>100%</dd></div>
           <div><dt>Contenedor</dt><dd>01</dd></div>
         </dl>
@@ -421,12 +421,85 @@
             <span class="card__cta">Jugar <span aria-hidden="true">→</span></span>
           </div>
         </a>
+
+        <a
+          class="card card--freedoom1"
+          href="games/freedoom/phase1/"
+          data-game="6"
+          aria-keyshortcuts="6"
+        >
+          <div class="card__art" aria-hidden="true">
+            <svg class="art art--freedoom1" viewBox="0 0 320 150" focusable="false">
+              <g shape-rendering="crispEdges">
+                <rect x="20" y="24" width="280" height="102" fill="#1a0d12" opacity=".8" />
+                <rect x="20" y="24" width="280" height="102" fill="none" stroke="#ff8a4c" stroke-width="2" />
+                <rect x="44" y="56" width="22" height="22" fill="#ff6b4a" />
+                <rect x="104" y="40" width="22" height="22" fill="#ffb066" />
+                <rect x="182" y="64" width="22" height="22" fill="#ff6b4a" />
+                <rect x="252" y="44" width="22" height="22" fill="#ffb066" />
+                <path d="M148 34v20m-10-10h20" stroke="#ffe9b0" stroke-width="3" />
+                <circle cx="158" cy="44" r="15" fill="none" stroke="#ffe9b0" stroke-width="2" />
+                <rect x="150" y="108" width="16" height="6" fill="#ffe9b0" />
+              </g>
+            </svg>
+          </div>
+          <div class="card__body">
+            <p class="card__index">06 <span>/</span> Clásico</p>
+            <h2 class="card__title">Freedoom Phase 1</h2>
+            <p class="card__text">
+              Nueve mapas y tres episodios del primer capítulo de Freedom.
+              Disparos en primera persona en el navegador, con el motor
+              PrBoom+ y el WAD servido desde Playkora.
+            </p>
+            <ul class="tags" aria-label="Características">
+              <li>WebAssembly</li>
+              <li>Teclado</li>
+              <li>1 jugador</li>
+            </ul>
+            <span class="card__cta">Jugar <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a
+          class="card card--freedoom2"
+          href="games/freedoom/phase2/"
+          data-game="7"
+          aria-keyshortcuts="7"
+        >
+          <div class="card__art" aria-hidden="true">
+            <svg class="art art--freedoom2" viewBox="0 0 320 150" focusable="false">
+              <g shape-rendering="crispEdges">
+                <rect x="20" y="24" width="280" height="102" fill="#170b1c" opacity=".8" />
+                <rect x="20" y="24" width="280" height="102" fill="none" stroke="#c8a6ff" stroke-width="2" />
+                <path d="M44 96h22V68h22v28h22V52h22v44h22V74h22v22h22V60h22v36h22V44h20v52H44z" fill="#8b5cf6" opacity=".7" />
+                <path d="M148 34v20m-10-10h20" stroke="#ffd479" stroke-width="3" />
+                <circle cx="158" cy="44" r="15" fill="none" stroke="#ffd479" stroke-width="2" />
+                <rect x="150" y="108" width="16" height="6" fill="#ffd479" />
+              </g>
+            </svg>
+          </div>
+          <div class="card__body">
+            <p class="card__index">07 <span>/</span> Clásico</p>
+            <h2 class="card__title">Freedoom Phase 2</h2>
+            <p class="card__text">
+              Treinta y dos mapas y jefes en la continuación de Freedom.
+              Partida larga, dificultad alta y el mismo motor clásico, sin
+              instalaciones.
+            </p>
+            <ul class="tags" aria-label="Características">
+              <li>WebAssembly</li>
+              <li>Teclado</li>
+              <li>32 mapas</li>
+            </ul>
+            <span class="card__cta">Jugar <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
       </section>
 
       <footer class="footer">
         <span class="footer__status"><i aria-hidden="true"></i> Servidor listo</span>
-        <span class="footer__note">Prisma Asalto · Serpiente · Cazaluces · Mosaico Lunar · Bastión Lumen</span>
-        <span class="footer__keys">Atajos <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><kbd>5</kbd></span>
+        <span class="footer__note">Prisma Asalto · Serpiente · Cazaluces · Mosaico Lunar · Bastión Lumen · Freedoom 1 · Freedoom 2</span>
+        <span class="footer__keys">Atajos <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><kbd>5</kbd><kbd>6</kbd><kbd>7</kbd></span>
         <nav class="legal-links" aria-label="Información legal">
           <a href="novedades.html">Novedades</a>
           <a href="privacidad.html">Privacidad</a>

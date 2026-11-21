@@ -233,6 +233,20 @@ body {
   animation-delay: 0.4s;
 }
 
+.card--freedoom1 {
+  --accent-card: #ff8a4c;
+  --art-glow: rgba(255, 107, 74, 0.22);
+  --art-glow-2: rgba(255, 176, 102, 0.16);
+  animation-delay: 0.48s;
+}
+
+.card--freedoom2 {
+  --accent-card: #c8a6ff;
+  --art-glow: rgba(139, 92, 246, 0.24);
+  --art-glow-2: rgba(255, 212, 121, 0.14);
+  animation-delay: 0.56s;
+}
+
 .card:hover {
   transform: translateY(-5px);
   border-color: color-mix(in srgb, var(--accent-card) 55%, transparent);
@@ -436,6 +450,16 @@ body {
 .card--bastion .card__cta {
   border-color: rgba(111, 233, 255, 0.38);
   background: linear-gradient(180deg, rgba(16, 58, 72, 0.78), rgba(8, 26, 34, 0.95));
+}
+
+.card--freedoom1 .card__cta {
+  border-color: rgba(255, 138, 76, 0.38);
+  background: linear-gradient(180deg, rgba(72, 32, 18, 0.78), rgba(30, 14, 10, 0.95));
+}
+
+.card--freedoom2 .card__cta {
+  border-color: rgba(200, 166, 255, 0.38);
+  background: linear-gradient(180deg, rgba(52, 30, 72, 0.78), rgba(20, 12, 30, 0.95));
 }
 
 .card:hover .card__cta {

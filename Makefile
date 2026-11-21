@@ -29,9 +29,13 @@ check:
 	curl -fsSI http://localhost:$(PORT)/games/cazaluces/ | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/mosaico-lunar/ | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/bastion-lumen/ | head -n 1
+	curl -fsSI http://localhost:$(PORT)/games/freedoom/phase1/ | head -n 1
+	curl -fsSI http://localhost:$(PORT)/games/freedoom/phase2/ | head -n 1
+	curl -fsSI http://localhost:$(PORT)/games/freedoom/wads/freedoom1.wad | head -n 1
+	curl -fsSI http://localhost:$(PORT)/games/freedoom/wads/freedoom2.wad | head -n 1
 	curl -fsSI http://localhost:$(PORT)/privacidad.html | head -n 1
 	curl -fsSI http://localhost:$(PORT)/cookies.html | head -n 1
 	curl -fsSI http://localhost:$(PORT)/ads.txt | head -n 1
 	curl -fsSI http://localhost:$(PORT)/novedades.html | head -n 1
 	@! grep -q 'unsafe-inline' nginx.conf || (echo "CSP relajada detectada" >&2; exit 1)
-	@! grep -Rq --exclude-dir=.git --exclude=Makefile -E '\{\{RFC\}\}|--rfc|\bRFC\b|sin anuncios' . || (echo "Texto prohibido encontrado" >&2; exit 1)
+	@! grep -RqI --exclude-dir=.git --exclude=Makefile -E '\{\{RFC\}\}|--rfc|\bRFC\b|sin anuncios' . || (echo "Texto prohibido encontrado" >&2; exit 1)

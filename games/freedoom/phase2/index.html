@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#05060f" />
+    <meta
+      name="description"
+      content="Freedoom Phase 2 en Playkora: la continuación de Freedom, treinta y dos mapas y batallas contra los jefes. Se juega en el navegador con el motor Dwasm."
+    />
+    <title>Freedoom Phase 2 · Playkora</title>
+    <link rel="icon" href="../../../favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="../../../css/consent.css" />
+    <link rel="stylesheet" href="../css/freedoom.css" />
+    <script src="../../../js/ads-config.js"></script>
+    <script src="../../../js/consent.js"></script>
+  </head>
+  <body data-wad="freedoom2.wad" data-wad-url="/games/freedoom/wads/freedoom2.wad">
+    <div class="fd-shell">
+      <nav class="fd-nav" aria-label="Navegación entre juegos">
+        <a class="fd-nav__back" href="../../../">&larr; Playkora</a>
+        <span class="fd-nav__label">07 &middot; Freedoom Phase 2</span>
+        <a href="../phase1/">Jugar Phase 1 &rarr;</a>
+      </nav>
+
+      <main>
+        <section class="fd-intro" id="fd-intro" aria-labelledby="fd-title">
+          <div class="fd-heading">
+            <h1 id="fd-title">Freedoom <span>Phase 2</span></h1>
+            <span class="fd-phase">freedoom2.wad</span>
+          </div>
+          <p class="fd-lead">
+            La continuación de Freedom: treinta y dos mapas, seis episodios y
+            jefes que ponen a prueba todo lo aprendido en Phase 1. Partida más
+            larga y dificultad más alta, en el mismo motor clásico.
+          </p>
+          <ul class="fd-facts" aria-label="Datos del juego">
+            <li>WebAssembly · PrBoom+</li>
+            <li>28 MB · local</li>
+            <li>1 jugador</li>
+            <li>Guardado local</li>
+          </ul>
+          <dl class="fd-controls">
+            <div><dt>Mover</dt><dd>WASD o flechas</dd></div>
+            <div><dt>Disparar</dt><dd>Ctrl o clic</dd></div>
+            <div><dt>Usar / abrir</dt><dd>Espacio</dd></div>
+            <div><dt>Menú</dt><dd>Esc</dd></div>
+          </dl>
+          <label class="fd-age">
+            <input type="checkbox" id="fd-age" />
+            Soy mayor de 17 años y acepto el contenido de violencia ficticia.
+          </label>
+          <button class="fd-start" type="button" id="fd-start" disabled>Jugar Phase 2</button>
+        </section>
+
+        <p class="fd-status" id="fd-status" role="status" aria-live="polite"></p>
+        <progress class="fd-progress" id="fd-progress" max="100" value="0" hidden></progress>
+
+        <section class="fd-stage" id="fd-stage" hidden aria-label="Partida de Freedoom Phase 2">
+          <canvas
+            id="canvas"
+            width="640"
+            height="480"
+            tabindex="-1"
+            aria-label="Pantalla de juego de Freedoom Phase 2"
+          ></canvas>
+          <pre class="fd-log" id="fd-log" hidden></pre>
+        </section>
+      </main>
+
+      <footer class="fd-foot">
+        <span>&copy; Yvan Miguel Perez de la Rosa · Playkora</span>
+        <nav class="legal-links" aria-label="Información legal">
+          <a href="../../../privacidad.html">Privacidad</a>
+          <a href="../../../cookies.html">Cookies</a>
+          <a href="../../../aviso-legal.html">Aviso legal</a>
+          <a href="../../../sobre-nosotros.html">Sobre nosotros</a>
+          <a href="../../../novedades.html">Novedades</a>
+          <a href="../../../contacto.html">Contacto</a>
+          <button type="button" data-consent-open>Configurar cookies</button>
+        </nav>
+      </footer>
+    </div>
+
+    <script src="../js/freedoom.js"></script>
+    <script src="../../../js/ads.js"></script>
+  </body>
+</html>

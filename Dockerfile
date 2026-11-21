@@ -1,7 +1,7 @@
 FROM nginx:1.27-alpine
 
 LABEL org.opencontainers.image.title="Playkora" \
-      org.opencontainers.image.description="Hub arcade con Prisma Asalto, Serpiente de Poderes, Cazaluces, Mosaico Lunar y Bastión Lumen, servido con Nginx." \
+      org.opencontainers.image.description="Hub arcade con cinco juegos originales y los clásicos Freedoom Phase 1 y 2, servido con Nginx." \
       org.opencontainers.image.licenses="MIT"
 
 RUN rm -rf /usr/share/nginx/html/*

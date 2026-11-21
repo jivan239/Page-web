@@ -1,0 +1,266 @@
+/* Freedoom en Playkora: pantalla de arranque y lienzo del motor WebAssembly. */
+
+:root {
+  --fd-bg: #05060f;
+  --fd-panel: rgba(17, 22, 40, 0.92);
+  --fd-line: rgba(140, 170, 230, 0.2);
+  --fd-text: #e8eefc;
+  --fd-muted: #9ba9c8;
+  --fd-gold: #ffd479;
+  --fd-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+}
+
+body {
+  background:
+    radial-gradient(circle at 50% -10%, rgba(91, 140, 255, 0.16), transparent 55%),
+    var(--fd-bg);
+  color: var(--fd-text);
+  font-family: var(--fd-font);
+  line-height: 1.55;
+}
+
+.fd-shell {
+  width: min(1100px, 100%);
+  margin: 0 auto;
+  padding: 18px clamp(12px, 3vw, 28px) 26px;
+}
+
+.fd-nav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+  margin-bottom: 16px;
+  font-size: 13px;
+}
+
+.fd-nav a {
+  color: var(--fd-gold);
+  text-decoration: none;
+}
+
+.fd-nav a:hover {
+  text-decoration: underline;
+}
+
+.fd-nav__label {
+  color: var(--fd-muted);
+  font-size: 11px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.fd-intro {
+  display: grid;
+  gap: 16px;
+  padding: clamp(18px, 3vw, 32px);
+  border: 1px solid var(--fd-line);
+  border-radius: 16px;
+  background: var(--fd-panel);
+}
+
+.fd-intro[hidden],
+.fd-stage[hidden],
+.fd-log[hidden] {
+  display: none;
+}
+
+.fd-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 8px 16px;
+}
+
+.fd-heading h1 {
+  margin: 0;
+  font-size: clamp(26px, 5vw, 42px);
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+}
+
+.fd-heading h1 span {
+  color: var(--fd-gold);
+}
+
+.fd-phase {
+  padding: 4px 9px;
+  border: 1px solid rgba(255, 212, 121, 0.4);
+  border-radius: 999px;
+  color: var(--fd-gold);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.fd-lead {
+  max-width: 70ch;
+  margin: 0;
+  color: var(--fd-muted);
+}
+
+.fd-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.fd-facts li {
+  padding: 5px 10px;
+  border: 1px solid var(--fd-line);
+  border-radius: 999px;
+  color: var(--fd-muted);
+  font-size: 11px;
+}
+
+.fd-controls {
+  display: grid;
+  gap: 6px;
+  margin: 0;
+  color: var(--fd-muted);
+  font-size: 12px;
+}
+
+.fd-controls div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 10px;
+}
+
+.fd-controls dt {
+  min-width: 92px;
+  color: var(--fd-text);
+}
+
+.fd-controls dd {
+  margin: 0;
+}
+
+.fd-age {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.fd-age input {
+  width: 17px;
+  height: 17px;
+  accent-color: var(--fd-gold);
+}
+
+.fd-start {
+  width: fit-content;
+  padding: 12px 24px;
+  border: 1px solid #e6a93f;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #ffe9b0, #e6a93f);
+  color: #2a1902;
+  font: 700 12px/1 var(--fd-font);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.fd-start:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.fd-status {
+  min-height: 1.4em;
+  margin: 0;
+  color: var(--fd-gold);
+  font-size: 12px;
+}
+
+.fd-status.is-error {
+  color: #ff9d9d;
+}
+
+.fd-progress {
+  width: min(320px, 100%);
+  height: 8px;
+}
+
+.fd-stage {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+#canvas {
+  display: block;
+  width: min(100%, 960px);
+  height: auto;
+  aspect-ratio: 4 / 3;
+  background: #000000;
+  border: 1px solid var(--fd-line);
+  border-radius: 6px;
+  outline: none;
+}
+
+.fd-log {
+  width: 100%;
+  max-height: 260px;
+  overflow: auto;
+  margin: 0;
+  padding: 12px;
+  border: 1px solid var(--fd-line);
+  border-radius: 8px;
+  background: #000000;
+  color: #b9c8e8;
+  font: 12px/1.5 ui-monospace, monospace;
+  white-space: pre-wrap;
+}
+
+.fd-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px 18px;
+  margin-top: 16px;
+  color: var(--fd-muted);
+  font-size: 11px;
+}
+
+.fd-foot nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 16px;
+}
+
+.fd-foot a {
+  color: var(--fd-muted);
+  text-decoration: none;
+}
+
+.fd-foot a:hover {
+  color: var(--fd-gold);
+}
+
+@media (max-width: 520px) {
+  .fd-controls dt {
+    min-width: 0;
+  }
+
+  .fd-intro {
+    padding: 16px;
+  }
+}
