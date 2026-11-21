@@ -378,21 +378,27 @@ function handleBoardClick(point) {
   if (game.phase !== 'playing' || game.paused) return;
   sound.ensure();
 
-  const tower = game.towerAt(point.x, point.y);
-  if (tower) {
-    game.selectTower(tower);
-    inspectorCache = '';
-    return;
-  }
-
   if (game.buildType) {
-    const cell = game.nearestBuildCell(point.x, point.y);
+    /* En modo construcción manda la celda tocada: no se selecciona una torre
+     * vecina aunque el toque caiga cerca de ella. */
+    const cell = game.cellAt(point.x, point.y);
     if (!cell) {
       flash('Construye junto al camino');
       return;
     }
+    if (game.occupied.has(cell.key)) {
+      flash('Casilla ocupada');
+      return;
+    }
     const result = game.placeTower(game.buildType, cell);
     if (!result.ok) flash(result.reason === 'oro' ? 'Oro insuficiente' : 'Casilla ocupada');
+    return;
+  }
+
+  const tower = game.towerAt(point.x, point.y);
+  if (tower) {
+    game.selectTower(tower);
+    inspectorCache = '';
     return;
   }
 

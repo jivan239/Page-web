@@ -397,12 +397,15 @@ export class Game {
     if (this.selectedId) this.buildType = null;
   }
 
-  /** Celda libre más cercana al toque; el radio amplio mejora el uso táctil. */
-  nearestBuildCell(x, y) {
+  /**
+   * Celda más cercana al toque. El radio no puede superar media celda (20)
+   * para no confundir una casilla vecina con la que se quiere construir.
+   */
+  nearestCell(x, y, includeOccupied = false) {
     let best = null;
-    let bestDistance = 62;
+    let bestDistance = 28;
     for (const cell of BUILDABLE_CELLS) {
-      if (this.occupied.has(cell.key)) continue;
+      if (!includeOccupied && this.occupied.has(cell.key)) continue;
       const distance = Math.hypot(cell.x - x, cell.y - y);
       if (distance < bestDistance) {
         best = cell;
@@ -412,9 +415,18 @@ export class Game {
     return best;
   }
 
+  nearestBuildCell(x, y) {
+    return this.nearestCell(x, y, false);
+  }
+
+  /** Celda visual más cercana, ocupada o no, para avisar en lugar de seleccionar. */
+  cellAt(x, y) {
+    return this.nearestCell(x, y, true);
+  }
+
   towerAt(x, y) {
     let best = null;
-    let bestDistance = 42;
+    let bestDistance = 18;
     for (const tower of this.towers) {
       const distance = Math.hypot(tower.x - x, tower.y - y);
       if (distance < bestDistance) {
