@@ -7,7 +7,7 @@
   const body = document.body;
   const wadName = body.dataset.wad;
   const wadUrl = body.dataset.wadUrl;
-  const engineDir = '/games/freedoom/engine/';
+  const engineDir = '../engine/';
 
   const startBtn = document.getElementById('fd-start');
   const ageBox = document.getElementById('fd-age');

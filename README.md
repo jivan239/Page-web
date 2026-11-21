@@ -197,6 +197,7 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │       ├── js/freedoom.js         # Descarga del WAD y arranque de Dwasm
 │       ├── engine/                # PrBoom+ WebAssembly (index.js/.wasm/.data)
 │       ├── wads/                  # freedoom1.wad y freedoom2.wad (28 MB c/u)
+│       ├── portada.jpeg           # Portada de ambas fases y de las tarjetas
 │       └── docs/                  # Licencia y créditos de Freedoom
 ├── Dockerfile                     # nginx:1.27-alpine + validación de config
 ├── nginx.conf                     # Gzip, caché, CSP estricta y /healthz
@@ -215,7 +216,9 @@ El juego se conserva tal cual, pero su `<style>` y `<script>` inline se movieron
 
 Los dos IWAD del paquete `freedoom-0.13.0` se sirven desde `games/freedoom/wads/` y se cargan en el navegador con [Dwasm](https://github.com/GMH-Code/Dwasm), un motor PrBoom+ compilado a WebAssembly. Cada fase tiene su propia ruta y sección en el hub (`/games/freedoom/phase1/` y `/games/freedoom/phase2/`).
 
-`games/freedoom/js/freedoom.js` descarga el WAD del mismo origen, lo escribe en MEMFS y arranca el motor con `-iwad`. No hay CDN, ni scripts inline, ni `eval`: la CSP solo añade `'wasm-unsafe-eval'`, que permite compilar WebAssembly sin habilitar JavaScript dinámico. Los controles táctiles usan `oly.js` cuando el dispositivo es táctil.
+`games/freedoom/js/freedoom.js` descarga el WAD del mismo origen, lo escribe en MEMFS y arranca el motor con `-iwad`. No hay CDN, ni scripts inline, ni `eval`: la CSP solo añade `'wasm-unsafe-eval'`, que permite compilar WebAssembly sin habilitar JavaScript dinámico. Los controles táctiles usan `oly.js` cuando el dispositivo es táctil. La portada `games/freedoom/portada.jpeg` se usa tanto en las dos fases como en sus tarjetas del hub.
+
+Las rutas del WAD y del motor son relativas, así que el sitio funciona tanto en la raíz de un dominio como en la subcarpeta de GitHub Pages. `.github/workflows/pages.yml` publica `main` en Pages; solo hay que activar una vez **Settings → Pages → Source: GitHub Actions** en el repositorio.
 
 Freedoom se distribuye bajo licencia BSD; el motor Dwasm es GPL-2.0. Los textos de licencia y créditos están en `games/freedoom/docs/` y `games/freedoom/engine/`.
 
@@ -387,9 +390,9 @@ legales quedan fijos en el borde inferior.
 - ID de publicador de AdSense: `ca-pub-XXXXXXXXXXXXXXXX`.
 - El correo público ya configurado es `playkoraarc@gmail.com`.
 
-Los datos del titular ya están rellenados en las páginas legales: Yvan Miguel
-Perez de la Rosa, Estado de Mexico, Mexico y playkoraarc@gmail.com. **No se
-publica ningún identificador fiscal.**
+Los datos de contacto públicos ya están rellenados en las páginas legales:
+Estado de Mexico, Mexico y playkoraarc@gmail.com. **No se publica ningún
+identificador fiscal ni el nombre del titular.**
 
 La documentación legal está adaptada a **México**: Ley Federal de Protección de
 Datos Personales en Posesión de los Particulares (LFPDPPP) y derechos **ARCO**.

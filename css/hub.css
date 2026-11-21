@@ -322,6 +322,17 @@ body {
   animation-delay: -1.7s;
 }
 
+.card__art--cover {
+  padding: 0;
+}
+
+.card__art--cover .art {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  animation: none;
+}
+
 .card__body {
   display: flex;
   flex-direction: column;

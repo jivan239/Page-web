@@ -33,6 +33,7 @@ check:
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/phase2/ | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/wads/freedoom1.wad | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/wads/freedoom2.wad | head -n 1
+	curl -fsSI http://localhost:$(PORT)/games/freedoom/portada.jpeg | head -n 1
 	curl -fsSI http://localhost:$(PORT)/privacidad.html | head -n 1
 	curl -fsSI http://localhost:$(PORT)/cookies.html | head -n 1
 	curl -fsSI http://localhost:$(PORT)/ads.txt | head -n 1

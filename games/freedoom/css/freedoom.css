@@ -76,6 +76,17 @@ body {
   display: none;
 }
 
+.fd-cover {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 596 / 335;
+  object-fit: cover;
+  border: 1px solid var(--fd-line);
+  border-radius: 10px;
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.35);
+}
+
 .fd-heading {
   display: flex;
   flex-wrap: wrap;
