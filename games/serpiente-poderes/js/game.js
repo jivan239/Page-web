@@ -506,6 +506,18 @@
     else queueDir(0, dy > 0 ? 1 : -1);
   }, { passive: true });
 
+  // cruceta del riel lateral
+  var PAD_DIRS = {
+    up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0]
+  };
+
+  for (const button of document.querySelectorAll('[data-dir]')) {
+    button.addEventListener('click', function () {
+      const dir = PAD_DIRS[button.dataset.dir];
+      if (dir) queueDir(dir[0], dir[1]);
+    });
+  }
+
   // pausa automática al cambiar de ventana
   window.addEventListener('blur', function () {
     if (state === STATE.PLAYING) togglePause();

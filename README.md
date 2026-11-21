@@ -336,6 +336,14 @@ El espacio, los botones y el modal del anuncio simulado están en
 recompensa. No se carga ningún SDK ni se solicita publicidad real mientras la
 configuración siga desactivada.
 
+### Diseño de pantalla
+
+`css/playfield.css` reparte cada juego en tres zonas visibles sin desplazamiento:
+anuncio a la izquierda, tablero en el centro y controles más recompensas a la
+derecha. En teléfono el anuncio pasa a una franja superior y los controles a un
+riel lateral estrecho; los botones se reducen de tamaño y el tablero conserva su
+proporción. Los enlaces legales quedan fijos en el borde inferior.
+
 ### 1. Datos que hay que aportar
 
 - Dominio definitivo (por ejemplo `tu-dominio.com`; evitar subdominios

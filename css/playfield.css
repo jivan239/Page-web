@@ -1,0 +1,447 @@
+/*
+ * Playkora · layout de juego siempre visible.
+ *
+ * Tres zonas en escritorio: anuncio a la izquierda, juego en el centro y
+ * controles + recompensas a la derecha. En teléfono el anuncio pasa a una
+ * franja superior y los controles a un riel lateral compacto.
+ *
+ * Se carga después del CSS de cada juego. Sin estilos inline (CSP estricta).
+ */
+
+:root {
+  --pk-left-rail: 128px;
+  --pk-right-rail: 196px;
+  --pk-field-gap: 8px;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  display: block !important;
+  min-height: 100dvh;
+  margin: 0;
+  padding: 0 !important;
+  overflow: hidden;
+}
+
+.pk-playfield {
+  box-sizing: border-box;
+  display: grid;
+  grid-template-columns: var(--pk-left-rail) minmax(0, 1fr) var(--pk-right-rail);
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: var(--pk-field-gap);
+  width: 100%;
+  height: calc(100dvh - 24px);
+  padding: 8px 8px 0;
+}
+
+/* El host y el wrapper no generan caja: sus hijos se colocan en el grid. */
+.pk-ad-host,
+.pk-rewards {
+  display: contents;
+}
+
+.pk-main {
+  grid-column: 2;
+  grid-row: 1 / -1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
+  gap: 6px;
+}
+
+.pk-main > .shell,
+.pk-main > .app {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+  gap: 6px;
+}
+
+.pk-main > .shell > .machine,
+.pk-main > .app > .machine {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* El canvas conserva su proporción; se limita también por la altura disponible. */
+.pk-playfield {
+  --pk-stage-ratio: 4 / 3;
+}
+
+.pk-playfield--serpiente { --pk-stage-ratio: 1 / 1; }
+.pk-playfield--cazaluces { --pk-stage-ratio: 448 / 496; }
+.pk-playfield--mosaico { --pk-stage-ratio: 460 / 600; }
+.pk-playfield--bastion { --pk-stage-ratio: 720 / 560; }
+
+.pk-main .screen,
+.pk-main .stage {
+  align-self: center;
+  flex: 0 0 auto;
+  width: min(100%, calc((100dvh - 190px) * var(--pk-stage-ratio)));
+  aspect-ratio: var(--pk-stage-ratio);
+  height: auto;
+  min-height: 0;
+}
+
+.pk-main canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.pk-rail--controls {
+  grid-column: 3;
+  grid-row: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  scrollbar-width: thin;
+  padding: 6px;
+  border: 1px solid rgba(122, 214, 255, 0.16);
+  border-radius: 10px;
+  background: rgba(6, 12, 28, 0.55);
+}
+
+/* ---------- Anuncios laterales ---------- */
+
+.pk-ad {
+  min-height: 0;
+  padding: 0.35rem;
+  overflow: hidden;
+}
+
+.pk-ad--left {
+  grid-column: 1;
+  grid-row: 1 / -1;
+  align-self: stretch;
+}
+
+.pk-ad--right {
+  grid-column: 3;
+  grid-row: 1;
+  min-height: 72px;
+  max-height: 104px;
+}
+
+.pk-ad--left .pk-ad__frame,
+.pk-ad--right .pk-ad__frame {
+  padding: 1.4rem 0.4rem 0.4rem;
+  font-size: 0.7rem;
+}
+
+.pk-ad--left .pk-ad__hint,
+.pk-ad--right .pk-ad__hint {
+  font-size: 0.62rem;
+}
+
+/* ---------- Recompensas ---------- */
+
+.pk-rewards__bar {
+  grid-column: 3;
+  grid-row: 3;
+  display: grid;
+  gap: 4px;
+}
+
+.pk-rewards__btn {
+  flex: none;
+  width: 100%;
+  min-height: 34px;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.68rem;
+  line-height: 1.15;
+}
+
+.pk-rewards__status {
+  grid-column: 3;
+  grid-row: 4;
+  min-height: 1rem;
+  font-size: 0.66rem;
+}
+
+/* ---------- Controles compactos del riel ---------- */
+
+.pk-rail--controls .ghost,
+.pk-rail--controls .icon-btn {
+  width: 32px;
+  height: 32px;
+  min-height: 32px;
+  font-size: 13px;
+}
+
+.pk-rail--controls .hints {
+  display: grid;
+  gap: 4px;
+  font-size: 9px;
+}
+
+.pk-rail--controls .hints__sound {
+  width: 100%;
+  padding: 5px 6px;
+  font-size: 9px;
+}
+
+.pk-rail--controls .touch {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.pk-rail--controls .touch__btn {
+  min-height: 42px;
+  padding: 4px;
+  font-size: 12px;
+}
+
+.pk-rail--controls .touch__btn--fire {
+  grid-column: 1 / -1;
+  font-size: 11px;
+}
+
+.pk-rail--controls .dpad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, 38px);
+  gap: 4px;
+}
+
+.pk-rail--controls .dpad button {
+  min-height: 0;
+  font-size: 15px;
+  border-radius: 8px;
+}
+
+.pk-rail--controls .pad {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, 38px);
+  gap: 4px;
+}
+
+.pk-rail--controls .pad button {
+  min-height: 0;
+  padding: 0;
+  font-size: 15px;
+  border-radius: 8px;
+}
+
+.pk-rail--controls .controlbar {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.pk-rail--controls .controlbar .btn {
+  width: 100%;
+  min-height: 34px;
+  padding: 5px 6px;
+  font-size: 9px;
+}
+
+.pk-rail--controls .arsenal {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 5px;
+}
+
+.pk-rail--controls .tower-card {
+  grid-template-columns: 10px 1fr;
+  grid-template-rows: auto auto;
+  min-height: 0;
+  padding: 6px;
+  column-gap: 6px;
+}
+
+.pk-rail--controls .tower-card__dot {
+  grid-row: 1 / 3;
+  width: 9px;
+  height: 9px;
+}
+
+.pk-rail--controls .tower-card__name {
+  font-size: 10px;
+}
+
+.pk-rail--controls .tower-card__desc {
+  display: none;
+}
+
+.pk-rail--controls .tower-card__cost {
+  margin-top: 1px;
+  font-size: 9px;
+}
+
+.pk-rail--controls .inspector {
+  padding: 6px;
+  gap: 5px;
+}
+
+.pk-rail--controls .inspector__head b {
+  font-size: 10px;
+}
+
+.pk-rail--controls .inspector__actions .btn {
+  min-height: 28px;
+  padding: 4px 6px;
+  font-size: 9px;
+}
+
+.pk-rail--controls .hint,
+.pk-rail--controls .legend,
+.pk-rail--controls .shade-legend,
+.pk-rail--controls .tessera-legend {
+  display: none;
+}
+
+/* ---------- Pie legal siempre accesible ---------- */
+
+.legal-links {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  height: 24px;
+  margin: 0;
+  padding: 2px 8px;
+  overflow: hidden;
+  border-top: 1px solid rgba(122, 214, 255, 0.12);
+  background: rgba(3, 6, 16, 0.94);
+  font-size: 9px;
+  line-height: 1.4;
+}
+
+.legal-links a,
+.legal-links button {
+  font-size: 9px;
+  white-space: nowrap;
+}
+
+.pk-playfield--bastion {
+  --pk-right-rail: 224px;
+}
+
+/* ---------- Teléfono ---------- */
+
+@media (max-width: 760px) {
+  :root {
+    --pk-right-rail: 84px;
+  }
+
+  .pk-playfield,
+  .pk-playfield--bastion {
+    --pk-right-rail: 84px;
+    grid-template-columns: minmax(0, 1fr) var(--pk-right-rail);
+    grid-template-rows: 40px minmax(0, 1fr) auto auto;
+    gap: 5px;
+    padding: 5px 5px 0;
+  }
+
+  .pk-ad--left {
+    display: none;
+  }
+
+  .pk-ad--right {
+    grid-column: 1 / -1;
+    grid-row: 1;
+    min-height: 0;
+    max-height: none;
+    height: 40px;
+  }
+
+  .pk-ad--right .pk-ad__frame {
+    padding: 0.9rem 0.4rem 0.2rem;
+    font-size: 0.62rem;
+  }
+
+  .pk-ad--right .pk-ad__hint {
+    display: none;
+  }
+
+  .pk-main {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .pk-rail--controls {
+    grid-column: 2;
+    grid-row: 2 / 5;
+    padding: 4px;
+  }
+
+  .pk-rail--controls .ghost,
+  .pk-rail--controls .icon-btn {
+    width: 30px;
+    height: 30px;
+    min-height: 30px;
+  }
+
+  .pk-rail--controls .touch,
+  .pk-rail--controls .dpad,
+  .pk-rail--controls .pad {
+    grid-template-columns: 1fr;
+    grid-template-rows: none;
+  }
+
+  .pk-rail--controls .dpad [data-dir],
+  .pk-rail--controls .pad button {
+    grid-column: auto;
+    grid-row: auto;
+  }
+
+  .pk-rail--controls .touch__btn,
+  .pk-rail--controls .dpad button,
+  .pk-rail--controls .pad button {
+    min-height: 34px;
+    font-size: 14px;
+  }
+
+  .pk-rail--controls .touch__btn--fire {
+    grid-column: auto;
+  }
+
+  .pk-rewards__bar {
+    grid-column: 1;
+    grid-row: 3;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .pk-rewards__btn {
+    min-height: 30px;
+    font-size: 0.62rem;
+  }
+
+  .pk-rewards__status {
+    grid-column: 1;
+    grid-row: 4;
+  }
+
+  .legal-links {
+    gap: 2px 8px;
+    height: 22px;
+    font-size: 8px;
+  }
+
+  .legal-links a,
+  .legal-links button {
+    font-size: 8px;
+  }
+}

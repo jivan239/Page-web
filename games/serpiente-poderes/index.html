@@ -9,11 +9,16 @@
   <link rel="stylesheet" href="css/styles.css" />
   <link rel="stylesheet" href="../../css/consent.css" />
   <link rel="stylesheet" href="../../css/rewards.css" />
+  <link rel="stylesheet" href="../../css/playfield.css" />
   <script src="../../js/ads-config.js"></script>
   <script src="../../js/consent.js"></script>
 </head>
 <body>
 
+<div class="pk-playfield pk-playfield--serpiente">
+  <div class="pk-ad-host" id="pkAdHost"></div>
+
+  <div class="pk-main">
 <div class="app">
   <nav class="appnav" aria-label="Navegación entre juegos">
     <a class="appnav__back" href="../../">&larr; Playkora</a>
@@ -24,10 +29,6 @@
     <div class="brand">
       <h1>Serpiente <span>de Poderes</span></h1>
       <p class="tagline">Roja crece · Azul acelera · Dorada crece el doble</p>
-    </div>
-    <div class="controls">
-      <button class="ghost" id="soundBtn" title="Sonido (M)" aria-label="Activar o silenciar sonido">&#128266;</button>
-      <button class="ghost" id="pauseBtn" title="Pausa (Espacio)" aria-label="Pausar el juego">&#10074;&#10074;</button>
     </div>
   </header>
 
@@ -50,13 +51,26 @@
     <div class="overlay" id="overlay"></div>
   </section>
 
-  <div class="pk-ad-host" id="pkAdHost"></div>
-
   <footer class="legend">
     <span><i class="dot red"></i>Manzana roja <b>+1</b></span>
     <span><i class="dot blue"></i>Manzana azul <b>+1 y 5 s de turbo</b></span>
     <span><i class="dot gold"></i>Manzana dorada <b>+2</b></span>
   </footer>
+</div>
+  </div>
+
+  <aside class="pk-rail pk-rail--controls" aria-label="Controles de Serpiente de Poderes">
+    <div class="controls">
+      <button class="ghost" id="soundBtn" title="Sonido (M)" aria-label="Activar o silenciar sonido">&#128266;</button>
+      <button class="ghost" id="pauseBtn" title="Pausa (Espacio)" aria-label="Pausar el juego">&#10074;&#10074;</button>
+    </div>
+    <div class="dpad" aria-label="Controles táctiles">
+      <button type="button" data-dir="up" aria-label="Arriba">&uarr;</button>
+      <button type="button" data-dir="left" aria-label="Izquierda">&larr;</button>
+      <button type="button" data-dir="down" aria-label="Abajo">&darr;</button>
+      <button type="button" data-dir="right" aria-label="Derecha">&rarr;</button>
+    </div>
+  </aside>
 </div>
 
 <nav class="legal-links" aria-label="Información legal">

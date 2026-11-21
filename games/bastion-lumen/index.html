@@ -13,10 +13,15 @@
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="../../css/consent.css" />
     <link rel="stylesheet" href="../../css/rewards.css" />
+    <link rel="stylesheet" href="../../css/playfield.css" />
     <script src="../../js/ads-config.js"></script>
     <script src="../../js/consent.js"></script>
   </head>
   <body>
+    <div class="pk-playfield pk-playfield--bastion">
+      <div class="pk-ad-host" id="pkAdHost"></div>
+
+      <div class="pk-main">
     <main class="shell">
       <nav class="appnav" aria-label="Navegación entre juegos">
         <a class="appnav__back" href="../../">&larr; Playkora</a>
@@ -28,23 +33,6 @@
           <div class="brand">
             <h1>Bastión Lumen</h1>
             <p class="tagline">Defiende el núcleo · 3 torretas</p>
-          </div>
-          <div class="actions">
-            <button
-              class="icon-btn"
-              type="button"
-              id="soundBtn"
-              aria-label="Silenciar sonido"
-              title="Sonido (M)"
-            >&#128266;</button>
-            <button
-              class="icon-btn"
-              type="button"
-              id="pauseBtn"
-              aria-label="Pausar el juego"
-              title="Pausa (P)"
-              disabled
-            >&#10074;&#10074;</button>
           </div>
         </header>
 
@@ -84,7 +72,33 @@
           <div class="overlay" id="overlay" role="dialog" aria-live="polite"></div>
         </div>
 
-        <div class="pk-ad-host" id="pkAdHost"></div>
+        <p class="hint">
+          <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> elegir · toca el tablero para
+          colocar · toca una torreta para mejorar o vender · <kbd>Espacio</kbd>
+          oleada · <kbd>F</kbd> velocidad · <kbd>M</kbd> sonido
+        </p>
+      </section>
+    </main>
+      </div>
+
+      <aside class="pk-rail pk-rail--controls" aria-label="Controles de Bastión Lumen">
+        <div class="actions">
+          <button
+            class="icon-btn"
+            type="button"
+            id="soundBtn"
+            aria-label="Silenciar sonido"
+            title="Sonido (M)"
+          >&#128266;</button>
+          <button
+            class="icon-btn"
+            type="button"
+            id="pauseBtn"
+            aria-label="Pausar el juego"
+            title="Pausa (P)"
+            disabled
+          >&#10074;&#10074;</button>
+        </div>
 
         <div class="controlbar">
           <button class="btn btn--primary" type="button" id="waveBtn">
@@ -115,14 +129,8 @@
         </section>
 
         <section class="inspector" id="inspector" aria-live="polite" hidden></section>
-
-        <p class="hint">
-          <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> elegir · toca el tablero para
-          colocar · toca una torreta para mejorar o vender · <kbd>Espacio</kbd>
-          oleada · <kbd>F</kbd> velocidad · <kbd>M</kbd> sonido
-        </p>
-      </section>
-    </main>
+      </aside>
+    </div>
 
     <nav class="legal-links" aria-label="Información legal">
       <a href="../../privacidad.html">Privacidad</a>

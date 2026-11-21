@@ -13,10 +13,15 @@
     <link rel="stylesheet" href="css/styles.css" />
     <link rel="stylesheet" href="../../css/consent.css" />
     <link rel="stylesheet" href="../../css/rewards.css" />
+    <link rel="stylesheet" href="../../css/playfield.css" />
     <script src="../../js/ads-config.js"></script>
     <script src="../../js/consent.js"></script>
   </head>
   <body>
+    <div class="pk-playfield pk-playfield--mosaico">
+      <div class="pk-ad-host" id="pkAdHost"></div>
+
+      <div class="pk-main">
     <main class="shell">
       <nav class="appnav" aria-label="Navegación entre juegos">
         <a class="appnav__back" href="../../">&larr; Playkora</a>
@@ -28,23 +33,6 @@
           <div class="brand">
             <h1>Mosaico Lunar</h1>
             <p class="tagline">Ensambla la noche · 7 teselas</p>
-          </div>
-          <div class="actions">
-            <button
-              class="icon-btn"
-              type="button"
-              id="soundBtn"
-              aria-label="Silenciar sonido"
-              title="Sonido (M)"
-            >&#128266;</button>
-            <button
-              class="icon-btn"
-              type="button"
-              id="pauseBtn"
-              aria-label="Pausar el juego"
-              title="Pausa (P)"
-              disabled
-            >&#10074;&#10074;</button>
           </div>
         </header>
 
@@ -78,17 +66,6 @@
           <div class="overlay" id="overlay" role="dialog" aria-live="polite"></div>
         </div>
 
-        <div class="pk-ad-host" id="pkAdHost"></div>
-
-        <div class="pad" aria-label="Controles táctiles">
-          <button type="button" data-act="rotate" aria-label="Girar la tesela">&#8634;</button>
-          <button type="button" data-act="drop" aria-label="Caída inmediata">&#10515;</button>
-          <button type="button" data-act="hold" aria-label="Guardar la tesela">&#8646;</button>
-          <button type="button" data-act="left" aria-label="Mover a la izquierda">&larr;</button>
-          <button type="button" data-act="down" aria-label="Bajar una fila">&darr;</button>
-          <button type="button" data-act="right" aria-label="Mover a la derecha">&rarr;</button>
-        </div>
-
         <ul class="tessera-legend" aria-label="Teselas del mosaico">
           <li><i class="dot dot--vara"></i>Vara</li>
           <li><i class="dot dot--dado"></i>Dado</li>
@@ -105,6 +82,36 @@
         </p>
       </section>
     </main>
+      </div>
+
+      <aside class="pk-rail pk-rail--controls" aria-label="Controles de Mosaico Lunar">
+        <div class="actions">
+          <button
+            class="icon-btn"
+            type="button"
+            id="soundBtn"
+            aria-label="Silenciar sonido"
+            title="Sonido (M)"
+          >&#128266;</button>
+          <button
+            class="icon-btn"
+            type="button"
+            id="pauseBtn"
+            aria-label="Pausar el juego"
+            title="Pausa (P)"
+            disabled
+          >&#10074;&#10074;</button>
+        </div>
+        <div class="pad" aria-label="Controles táctiles">
+          <button type="button" data-act="rotate" aria-label="Girar la tesela">&#8634;</button>
+          <button type="button" data-act="drop" aria-label="Caída inmediata">&#10515;</button>
+          <button type="button" data-act="hold" aria-label="Guardar la tesela">&#8646;</button>
+          <button type="button" data-act="left" aria-label="Mover a la izquierda">&larr;</button>
+          <button type="button" data-act="down" aria-label="Bajar una fila">&darr;</button>
+          <button type="button" data-act="right" aria-label="Mover a la derecha">&rarr;</button>
+        </div>
+      </aside>
+    </div>
 
     <nav class="legal-links" aria-label="Información legal">
       <a href="../../privacidad.html">Privacidad</a>

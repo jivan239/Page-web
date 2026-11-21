@@ -23,8 +23,9 @@
   const createAdSlot = (options = {}) => {
     const label = options.label || 'Espacio publicitario';
     const hint = options.hint || 'Aquí se mostrará el anuncio cuando esté activo.';
+    const className = options.className ? `pk-ad ${options.className}` : 'pk-ad';
 
-    const slot = el('section', 'pk-ad');
+    const slot = el('section', className);
     slot.setAttribute('aria-label', label);
     slot.appendChild(el('span', 'pk-ad__label', label));
 
@@ -99,7 +100,8 @@
         : options.host || document.body;
 
     const wrapper = el('div', 'pk-rewards');
-    const adSlot = createAdSlot(options.ad);
+    const adSlotLeft = createAdSlot({ ...options.ad, className: 'pk-ad--left' });
+    const adSlotRight = createAdSlot({ ...options.ad, className: 'pk-ad--right' });
     const bar = el('div', 'pk-rewards__bar');
     const status = el('p', 'pk-rewards__status', '');
     status.setAttribute('aria-live', 'polite');
@@ -114,7 +116,8 @@
 
     bar.appendChild(lifeBtn);
     bar.appendChild(bonusBtn);
-    wrapper.appendChild(adSlot);
+    wrapper.appendChild(adSlotLeft);
+    wrapper.appendChild(adSlotRight);
     wrapper.appendChild(bar);
     wrapper.appendChild(status);
     host.appendChild(wrapper);
