@@ -122,6 +122,7 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 ├── sobre-nosotros.html            # Sobre el proyecto
 ├── contacto.html                  # Contacto
 ├── recomendaciones.html           # Recomendaciones priorizadas del proyecto
+├── novedades.html                 # Cambios recientes del proyecto
 ├── ads.txt                        # Declaración de publicador de AdSense
 ├── robots.txt                     # Instrucciones para rastreadores
 ├── sitemap.xml                    # Mapa del sitio
@@ -130,7 +131,8 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │   ├── hub.css                    # Estilos del hub, tarjetas y fondo estelar
 │   ├── consent.css                # Banner de cookies y pie legal compartido
 │   ├── legal.css                  # Estilos de las páginas informativas
-│   └── recomendaciones.css        # Tarjetas de recomendaciones
+│   ├── recomendaciones.css        # Tarjetas de recomendaciones
+│   └── novedades.css              # Entradas de la sección de novedades
 ├── js/
 │   ├── hub.js                     # Fondo animado y atajos 1/2/3/4/5
 │   ├── ads-config.js              # Estado de monetización y ca-pub
@@ -315,6 +317,17 @@ y CSP estricta (alta), balance de Serpiente y récord visible en el hub (media),
 y SEO, accesibilidad y pruebas de layout (baja). Es contenido interno del
 proyecto: no modifica la configuración de monetización ni activa anuncios.
 
+Quedan implementadas la revisión de consentimiento, la CSP estricta, la
+instrumentación local de Serpiente (`?debug` y
+`window.__serpiente.metrics()`), el mejor marcador en el hub, la sección de
+novedades, los `aria-live` en marcadores y la medición de layout. Siguen
+pendientes el dominio y el ID de publicador: no se han inventado y los anuncios
+continúan desactivados.
+
+`novedades.html` recoge los cambios recientes (poderes de Serpiente, riel
+lateral de controles y hoja de ruta) con entradas breves y enlaces al resto del
+sitio.
+
 ## Monetización con Google AdSense (preparada, desactivada)
 
 El repositorio ya incluye todo lo que AdSense necesita para revisar el sitio:
@@ -396,7 +409,7 @@ python3 scripts/configure-ads.py \
   --enable
 ```
 
-El script actualiza `ads.txt`, `robots.txt`, `sitemap.xml`, las seis páginas
+El script actualiza `ads.txt`, `robots.txt`, `sitemap.xml`, las siete páginas
 informativas y `js/ads-config.js`. Vuelve a ejecutarlo sin `--enable` si quieres
 dejar los anuncios apagados.
 

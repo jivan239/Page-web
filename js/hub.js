@@ -87,6 +87,23 @@
     }
   });
 
+  for (const node of Array.from(document.querySelectorAll('[data-best-key]'))) {
+    const key = node.getAttribute('data-best-key');
+    const label = node.getAttribute('data-best-label') || 'Récord';
+    let raw = null;
+    try {
+      raw = window.localStorage.getItem(key);
+    } catch {
+      // Almacenamiento no disponible (modo privado, permisos, etc.).
+    }
+    const value = Number.parseInt(raw || '0', 10);
+    if (!Number.isFinite(value) || value <= 0) continue;
+
+    const padded = key === 'prismaAsalto:highscore' ? String(value).padStart(6, '0') : String(value);
+    node.textContent = label + ' ' + padded;
+    node.hidden = false;
+  }
+
   const cards = Array.from(document.querySelectorAll('[data-game]'));
   window.addEventListener('keydown', (event) => {
     if (event.metaKey || event.ctrlKey || event.altKey) return;

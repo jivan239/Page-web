@@ -7,7 +7,7 @@ LABEL org.opencontainers.image.title="Playkora" \
 RUN rm -rf /usr/share/nginx/html/*
 
 COPY nginx.conf /etc/nginx/conf.d/default.conf
-COPY index.html serpiente-poderes.html privacidad.html cookies.html aviso-legal.html sobre-nosotros.html contacto.html recomendaciones.html favicon.svg /usr/share/nginx/html/
+COPY index.html serpiente-poderes.html privacidad.html cookies.html aviso-legal.html sobre-nosotros.html contacto.html recomendaciones.html novedades.html favicon.svg /usr/share/nginx/html/
 COPY ads.txt robots.txt sitemap.xml /usr/share/nginx/html/
 COPY css /usr/share/nginx/html/css
 COPY js /usr/share/nginx/html/js

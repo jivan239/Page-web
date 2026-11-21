@@ -28,6 +28,7 @@ TEXT_FILES = [
     "sobre-nosotros.html",
     "contacto.html",
     "recomendaciones.html",
+    "novedades.html",
 ]
 
 

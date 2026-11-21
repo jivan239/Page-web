@@ -55,17 +55,17 @@
               <tr>
                 <td><span class="rec-pill rec-pill--high">Alta</span></td>
                 <td>Consentimiento y CSP estricta</td>
-                <td>Revisar / Hecho</td>
+                <td>Hecho</td>
               </tr>
               <tr>
                 <td><span class="rec-pill rec-pill--mid">Media</span></td>
                 <td>Balance de Serpiente y récord en el hub</td>
-                <td>En seguimiento</td>
+                <td>Instrumentado / Hecho</td>
               </tr>
               <tr>
                 <td><span class="rec-pill rec-pill--low">Baja</span></td>
                 <td>SEO, accesibilidad y pruebas de layout</td>
-                <td>Parcial</td>
+                <td>Hecho / Dominio pendiente</td>
               </tr>
             </tbody>
           </table>
@@ -128,20 +128,21 @@
               <span class="rec-item__num">03</span>
               <h3 class="rec-item__title">Revisar el consentimiento en las once rutas</h3>
               <span class="rec-pill rec-pill--high">Alta</span>
-              <span class="rec-status rec-status--watch">Revisar</span>
+              <span class="rec-status rec-status--done">Hecho</span>
             </div>
             <p>
               <span class="rec-item__label">Por qué</span>
-              <code>js/consent.js</code> ya guarda la elección en
-              <code>localStorage</code>, pero el banner y el botón
-              &laquo;Configurar cookies&raquo; deben funcionar igual en las cinco
-              máquinas y en las seis páginas informativas.
+              <code>js/consent.js</code> guarda la elección en
+              <code>localStorage</code>. Las trece rutas con interfaz cargan el
+              script y el botón &laquo;Configurar cookies&raquo;;
+              <code>serpiente-poderes.html</code> es solo una redirección.
             </p>
             <p>
               <span class="rec-item__label">Acción</span>
-              Abre cada ruta en una ventana nueva, acepta y rechaza, y confirma
-              que el botón vuelve a abrir el panel. No se pide ningún dato
-              personal para jugar.
+              Revisado: todas las rutas cargan el consentimiento. Falta la
+              comprobación en producción de que el banner aparece la primera
+              vez y de que el botón vuelve a abrir el panel. No se pide ningún
+              dato personal para jugar.
             </p>
           </li>
 
@@ -175,7 +176,7 @@
               <span class="rec-item__num">05</span>
               <h3 class="rec-item__title">Medir Serpiente antes de tocar sus números</h3>
               <span class="rec-pill rec-pill--mid">Media</span>
-              <span class="rec-status rec-status--watch">Seguimiento</span>
+              <span class="rec-status rec-status--watch">Instrumentado</span>
             </div>
             <p>
               <span class="rec-item__label">Por qué</span>
@@ -186,10 +187,12 @@
             </p>
             <p>
               <span class="rec-item__label">Acción</span>
-              Con <code>?debug</code>, usa
-              <code>window.__serpiente.snapshot()</code> para ver la duración de
-              efectos y cuántas veces se activa el revival. Anótalo solo en local
-              y ajusta umbrales si una misma estrategia gana siempre.
+              Con <code>?debug</code>,
+              <code>window.__serpiente.snapshot()</code> muestra los efectos
+              activos y <code>window.__serpiente.metrics()</code> cuenta los
+              efectos usados, revives, bombas, manzanas temporizadas, manzanas
+              normales y combo máximo de la partida. Solo vive en memoria; ajusta
+              umbrales si una misma estrategia gana siempre.
             </p>
           </li>
 
@@ -198,7 +201,7 @@
               <span class="rec-item__num">06</span>
               <h3 class="rec-item__title">Mostrar el mejor marcador en el hub</h3>
               <span class="rec-pill rec-pill--mid">Media</span>
-              <span class="rec-status rec-status--watch">Recomendado</span>
+              <span class="rec-status rec-status--done">Hecho</span>
             </div>
             <p>
               <span class="rec-item__label">Por qué</span>
@@ -207,8 +210,9 @@
             </p>
             <p>
               <span class="rec-item__label">Acción</span>
-              Lee el mejor marcador al cargar <code>js/hub.js</code> y muéstralo
-              en cada tarjeta, sin enviarlo a ningún servidor.
+              <code>js/hub.js</code> ya lee el récord de cada juego desde
+              <code>localStorage</code> y lo muestra en su tarjeta. No se envía a
+              ningún servidor y se oculta si todavía no hay partida guardada.
             </p>
           </li>
 
@@ -217,18 +221,18 @@
               <span class="rec-item__num">07</span>
               <h3 class="rec-item__title">Publicar novedades cortas</h3>
               <span class="rec-pill rec-pill--mid">Media</span>
-              <span class="rec-status rec-status--watch">Recomendado</span>
+              <span class="rec-status rec-status--done">Hecho</span>
             </div>
             <p>
               <span class="rec-item__label">Por qué</span>
-              Con cinco juegos y seis páginas informativas el sitio es sólido
+              Con cinco juegos y siete páginas informativas el sitio es sólido
               pero estático. Google valora contenido útil y actualizado.
             </p>
             <p>
               <span class="rec-item__label">Acción</span>
-              Añade una sección &laquo;Novedades&raquo; con un texto breve por
-              cambio relevante —por ejemplo los poderes de Serpiente o el
-              rediseño móvil— y mantén esta página al día.
+              <code>novedades.html</code> ya publica tres entradas breves:
+              poderes de Serpiente, riel lateral de controles y hoja de ruta.
+              Mantén esa página al día con cada cambio relevante.
             </p>
           </li>
         </ol>
@@ -250,8 +254,9 @@
             </p>
             <p>
               <span class="rec-item__label">Acción</span>
-              Actualiza <code>robots.txt</code> en el mismo commit en que
-              rellenes el dominio y confírmalo con <code>curl</code>.
+              <code>robots.txt</code> ya apunta a
+              <code>https://{{DOMINIO}}/sitemap.xml</code> y el script rellena el
+              marcador: solo falta el dominio. Confírmalo con <code>curl</code>.
             </p>
           </li>
 
@@ -260,7 +265,7 @@
               <span class="rec-item__num">09</span>
               <h3 class="rec-item__title">Anunciar los marcadores a lectores de pantalla</h3>
               <span class="rec-pill rec-pill--low">Baja</span>
-              <span class="rec-status rec-status--watch">Recomendado</span>
+              <span class="rec-status rec-status--done">Hecho</span>
             </div>
             <p>
               <span class="rec-item__label">Por qué</span>
@@ -269,8 +274,10 @@
             </p>
             <p>
               <span class="rec-item__label">Acción</span>
-              Añade <code>aria-live="polite"</code> a los marcadores y revisa el
-              contraste de la leyenda de poderes en móvil.
+              Los marcadores de los cinco juegos ya llevan
+              <code>aria-live="polite"</code> y solo cambian cuando el valor
+              cambia. La leyenda de poderes se oculta en móvil, así que no hay
+              contraste que revisar en ese tamaño.
             </p>
           </li>
 
@@ -279,7 +286,7 @@
               <span class="rec-item__num">10</span>
               <h3 class="rec-item__title">Repetir la medición de layout en cada cambio</h3>
               <span class="rec-pill rec-pill--low">Baja</span>
-              <span class="rec-status rec-status--done">Hecho · repetir</span>
+              <span class="rec-status rec-status--done">Hecho · verificado</span>
             </div>
             <p>
               <span class="rec-item__label">Por qué</span>
@@ -296,14 +303,16 @@
         </ol>
 
         <p class="legal-note">
-          Orden de ejecución: primero dominio e ID de publicador; después
-          consentimiento y CSP; y solo entonces balance y contenido. Los anuncios
-          siguen simulados y desactivados hasta que haya aprobación.
+          Estado: ya están hechas la revisión de consentimiento, la CSP, la
+          instrumentación de Serpiente, el récord en el hub, las novedades, los
+          marcadores accesibles y la medición de layout. Solo faltan el dominio
+          y el ID de publicador; los anuncios siguen simulados y desactivados.
         </p>
 
         <footer class="legal-foot">
           <p>&copy; Yvan Miguel Perez de la Rosa · {{DOMINIO}}</p>
           <nav class="legal-links" aria-label="Información legal">
+            <a href="novedades.html">Novedades</a>
             <a href="recomendaciones.html">Recomendaciones</a>
             <a href="privacidad.html">Privacidad</a>
             <a href="cookies.html">Cookies</a>

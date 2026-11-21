@@ -69,6 +69,7 @@
   let snake, dir, inputQueue, growth, score, best, apples, bonuses, particles;
   let stepTimer, shake, flash, overAt, deathReason;
   let effects, combo, lastEatAt, reversePending;
+  let metrics;
 
   let muted = false;
   let hudCache = {};
@@ -212,6 +213,14 @@
     combo = 1;
     lastEatAt = 0;
     reversePending = false;
+    metrics = {
+      effects: { fever: 0, ghost: 0, magnet: 0, ice: 0, turbo: 0, reverse: 0 },
+      revives: 0,
+      bombs: 0,
+      timedEaten: 0,
+      applesEaten: 0,
+      maxCombo: 1
+    };
     const spot = spawnCell();
     if (spot) apples.push(spot);
     hudCache = {};
@@ -284,6 +293,7 @@
       return false;
     }
     effects.ghost = Math.max(effects.ghost, REVIVE_GHOST_MS);
+    metrics.effects.ghost += 1;
     sfx('power');
     syncRewardUi();
     rewardsUI.setStatus('¡Fantasma de 3 s conseguido!');
@@ -292,6 +302,7 @@
 
   function reviveWithLife() {
     if (state !== STATE.OVER) return false;
+    metrics.revives += 1;
     snake = [
       { x: 8, y: 12 },
       { x: 7, y: 12 },
@@ -386,6 +397,8 @@
       combo = 1;
     }
     lastEatAt = now;
+    metrics.maxCombo = Math.max(metrics.maxCombo, combo);
+    if (normal) metrics.applesEaten += 1;
 
     let points = base * combo;
     if (normal && effects.fever > 0) points *= 2;
@@ -514,6 +527,7 @@
   }
 
   function hitBomb(bomb) {
+    metrics.bombs += 1;
     score = Math.max(0, score - 60);
     combo = 1;
     lastEatAt = 0;
@@ -532,6 +546,7 @@
       case 'gold':
         registerEat(PTS.gold, now, false);
         effects.fever = Math.max(effects.fever, FEVER_MS);
+        metrics.effects.fever += 1;
         syncApples();
         shake = Math.max(shake, 7);
         flash = 0.5;
@@ -539,16 +554,19 @@
       case 'ghost':
         registerEat(PTS.ghost, now, false);
         effects.ghost = Math.max(effects.ghost, GHOST_MS);
+        metrics.effects.ghost += 1;
         growth += 1;
         break;
       case 'magnet':
         registerEat(PTS.magnet, now, false);
         effects.magnet = Math.max(effects.magnet, MAGNET_MS);
+        metrics.effects.magnet += 1;
         growth += 1;
         break;
       case 'ice':
         registerEat(PTS.ice, now, false);
         effects.ice = Math.max(effects.ice, ICE_MS);
+        metrics.effects.ice += 1;
         growth += 1;
         break;
       case 'lime':
@@ -558,15 +576,18 @@
       case 'turbo':
         registerEat(PTS.turbo, now, false);
         effects.turbo = Math.max(effects.turbo, TURBO_MS);
+        metrics.effects.turbo += 1;
         break;
       case 'reverse':
         registerEat(PTS.reverse, now, false);
         effects.reverse = Math.max(effects.reverse, REVERSE_MS);
+        metrics.effects.reverse += 1;
         reversePending = true;
         break;
       case 'timed': {
         const value = 20 + Math.round(70 * clamp(b.life / b.maxLife, 0, 1));
         registerEat(value, now, false);
+        metrics.timedEaten += 1;
         growth += 1;
         break;
       }
@@ -1392,6 +1413,7 @@
           speed: speedFactor()
         };
       },
+      metrics: function () { return JSON.parse(JSON.stringify(metrics)); },
       start: startGame,
       step: step,
       tick: function (ms) { update(ms / 1000); syncHud(); return true; },

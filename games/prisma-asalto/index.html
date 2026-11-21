@@ -50,7 +50,7 @@
               <p><kbd>ESPACIO</kbd> disparar</p>
               <p><kbd>P</kbd> pausa · <kbd>M</kbd> sonido</p>
             </div>
-            <p class="record-line">RÉCORD <strong id="menu-highscore">000000</strong></p>
+            <p class="record-line">RÉCORD <strong id="menu-highscore" aria-live="polite">000000</strong></p>
           </section>
 
           <section class="panel" id="screen-pause" aria-labelledby="pause-title" hidden>
@@ -69,9 +69,9 @@
             <h2 class="title title--sm" id="gameover-title">Fin del juego</h2>
             <p class="tagline" id="gameover-record" hidden>¡Nuevo récord personal!</p>
             <dl class="stats">
-              <div><dt>Puntos</dt><dd id="final-score">0</dd></div>
+              <div><dt>Puntos</dt><dd id="final-score" aria-live="polite">0</dd></div>
               <div><dt>Oleada</dt><dd id="final-wave">1</dd></div>
-              <div><dt>Récord</dt><dd id="final-highscore">0</dd></div>
+              <div><dt>Récord</dt><dd id="final-highscore" aria-live="polite">0</dd></div>
             </dl>
             <div class="actions">
               <button class="btn btn--primary" data-action="restart">Reintentar</button>
@@ -113,6 +113,7 @@
       <a href="../../cookies.html">Cookies</a>
       <a href="../../aviso-legal.html">Aviso legal</a>
       <a href="../../sobre-nosotros.html">Sobre nosotros</a>
+      <a href="../../novedades.html">Novedades</a>
       <a href="../../recomendaciones.html">Recomendaciones</a>
       <a href="../../contacto.html">Contacto</a>
       <button type="button" data-consent-open>Configurar cookies</button>
