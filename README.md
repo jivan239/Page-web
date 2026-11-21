@@ -3,7 +3,7 @@
 Hub arcade con cinco juegos originales jugables en el navegador:
 
 - **Prisma Asalto** — shooter de cristales con oleadas, escudos destructibles y un orbe errante.
-- **Serpiente de Poderes** — snake con manzanas que dan turbo, crecimiento y puntos extra.
+- **Serpiente de Poderes** — snake con manzanas de poder, trampas, combos y revive con fantasma.
 - **Cazaluces** — laberinto original con Chispa, cuatro sombras, sus cuatro estados y sus personalidades de IA.
 - **Mosaico Lunar** — puzzle de teselas que caen, con pieza fantasma, reserva y siete formas propias.
 - **Bastión Lumen** — tower defense con circuito curvo, tres torretas, mejoras, jefes cada cinco oleadas y recompensas simuladas.
@@ -208,9 +208,16 @@ El juego se conserva tal cual, pero su `<style>` y `<script>` inline se movieron
 
 **Serpiente de Poderes**
 
-- Manzana roja: +1 de largo. Azul: +1 y 5 s de turbo. Dorada: +2 y más puntos.
-- La velocidad sube con el marcador; el turbo multiplica el ritmo.
-- Récord persistente en `localStorage`.
+- Manzana roja: +1 de largo y puntos base. Comer en menos de 3 s sube el combo (×2, ×3, ×4) con un sonido más agudo.
+- Dorada: 8 s de fiebre (manzanas normales ×2 y 3 manzanas a la vez).
+- Azul: 6 s de fantasma, semitransparente; atraviesa el cuerpo y los bordes.
+- Morada: 8 s de imán; atrae manzanas y poderes cercanos. Celeste: 7 s de hielo, velocidad ×0,65.
+- Verde lima: recorta 3 o 4 bloques de cola sin perder puntos.
+- Roja brillante: 5 s de turbo (velocidad ×2 y toda la comida ×3). Negra: bomba temporal que quita 60 puntos y 4 bloques.
+- Invertida: controles al revés 4 s; si sobrevives, +120 puntos.
+- Temporizada: parpadea y desaparece en 6 s; da hasta 90 puntos según lo rápido que se coma.
+- Al chocar con 250 puntos o más se ofrece revivir una vez con fantasma de 3 s (anuncio simulado).
+- La velocidad base sube con el marcador; el récord se guarda en `localStorage`.
 
 **Cazaluces**
 
@@ -325,7 +332,7 @@ la "vida extra" repara el núcleo durante la partida.
 | Juego | Vida extra (máx. 2) | Recompensa adicional (1) |
 | --- | --- | --- |
 | Prisma Asalto | Revivir con 1 vida al perder | Escudo de cristal 8 s y limpia balas |
-| Serpiente de Poderes | Segunda oportunidad conservando puntos | Turbo de 5 s |
+| Serpiente de Poderes | Revivir 1 vez con Fantasma 3 s (desde 250 puntos) | Fantasma 3 s durante la partida |
 | Cazaluces | Revivir con 1 vida | Asustar sombras |
 | Mosaico Lunar | Limpiar 3 filas superiores y reanudar | Tesela Vara al frente de la cola |
 | Bastión Lumen | Reparar núcleo +30 HP | +100 oro |
@@ -341,8 +348,11 @@ configuración siga desactivada.
 `css/playfield.css` reparte cada juego en tres zonas visibles sin desplazamiento:
 anuncio a la izquierda, tablero en el centro y controles más recompensas a la
 derecha. En teléfono el anuncio pasa a una franja superior y los controles a un
-riel lateral estrecho; los botones se reducen de tamaño y el tablero conserva su
-proporción. Los enlaces legales quedan fijos en el borde inferior.
+riel lateral estrecho; los botones se reducen de tamaño y el tablero se encoge lo
+necesario para que nada quede encimado. Este riel se aplica a Cazaluces,
+Serpiente de Poderes, Prisma Asalto y Bastión Lumen (`--pk-side-rail: 104px`,
+`124px` en Bastión). Mosaico Lunar conserva los controles abajo. Los enlaces
+legales quedan fijos en el borde inferior.
 
 ### 1. Datos que hay que aportar
 

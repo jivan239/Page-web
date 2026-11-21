@@ -82,7 +82,10 @@ body {
   --pk-stage-reserve: 190px;
 }
 
-.pk-playfield--serpiente { --pk-stage-ratio: 1 / 1; }
+.pk-playfield--serpiente {
+  --pk-stage-ratio: 1 / 1;
+  --pk-stage-reserve: 250px;
+}
 .pk-playfield--cazaluces {
   --pk-stage-ratio: 448 / 496;
   --pk-stage-reserve: 300px;
@@ -381,6 +384,7 @@ body {
 @media (max-width: 760px) {
   :root {
     --pk-legal-h: 34px;
+    --pk-side-rail: 104px;
   }
 
   .pk-playfield,
@@ -544,5 +548,253 @@ body {
   .legal-links a,
   .legal-links button {
     font-size: 8px;
+  }
+
+  /* Juegos con muchos controles: riel lateral en vez de barra inferior. */
+  .pk-playfield--serpiente,
+  .pk-playfield--cazaluces,
+  .pk-playfield--prisma,
+  .pk-playfield--bastion {
+    grid-template-columns: minmax(0, 1fr) var(--pk-side-rail);
+    grid-template-rows: 38px minmax(0, 1fr) auto 18px;
+  }
+
+  .pk-playfield--bastion {
+    --pk-side-rail: 124px;
+  }
+
+  .pk-playfield--serpiente .pk-ad--right,
+  .pk-playfield--cazaluces .pk-ad--right,
+  .pk-playfield--prisma .pk-ad--right,
+  .pk-playfield--bastion .pk-ad--right {
+    grid-column: 1 / -1;
+  }
+
+  .pk-playfield--serpiente .pk-rail--controls,
+  .pk-playfield--cazaluces .pk-rail--controls,
+  .pk-playfield--prisma .pk-rail--controls,
+  .pk-playfield--bastion .pk-rail--controls {
+    grid-column: 2;
+    grid-row: 2 / 5;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: stretch;
+    justify-content: flex-start;
+    gap: 6px;
+    padding: 6px;
+    overflow: auto;
+  }
+
+  .pk-playfield--serpiente .controls,
+  .pk-playfield--cazaluces .actions,
+  .pk-playfield--bastion .actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+  }
+
+  .pk-playfield--serpiente .dpad,
+  .pk-playfield--cazaluces .dpad {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(2, 44px);
+    gap: 6px;
+    width: 100%;
+  }
+
+  .pk-playfield--serpiente .dpad [data-dir='up'],
+  .pk-playfield--cazaluces .dpad [data-dir='up'] {
+    grid-column: 1;
+    grid-row: 1;
+  }
+
+  .pk-playfield--serpiente .dpad [data-dir='right'],
+  .pk-playfield--cazaluces .dpad [data-dir='right'] {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .pk-playfield--serpiente .dpad [data-dir='left'],
+  .pk-playfield--cazaluces .dpad [data-dir='left'] {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .pk-playfield--serpiente .dpad [data-dir='down'],
+  .pk-playfield--cazaluces .dpad [data-dir='down'] {
+    grid-column: 2;
+    grid-row: 2;
+  }
+
+  .pk-playfield--serpiente .dpad button,
+  .pk-playfield--cazaluces .dpad button {
+    min-height: 44px;
+    font-size: 18px;
+  }
+
+  .pk-playfield--prisma .touch {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(3, 48px);
+    gap: 6px;
+  }
+
+  .pk-playfield--prisma .touch__btn--fire {
+    font-size: 12px;
+  }
+
+  .pk-playfield--prisma .hints span {
+    display: none;
+  }
+
+  .pk-playfield--prisma .hints__sound {
+    width: 100%;
+  }
+
+  .pk-playfield--bastion .controlbar {
+    grid-template-columns: 1fr;
+  }
+
+  .pk-playfield--bastion .controlbar .btn {
+    min-height: 44px;
+    font-size: 10px;
+  }
+
+  .pk-playfield--bastion .arsenal {
+    grid-template-columns: 1fr;
+  }
+
+  .pk-playfield--bastion .tower-card {
+    min-height: 52px;
+  }
+
+  .pk-playfield--bastion .overlay {
+    align-items: flex-start;
+    padding: 6px;
+    overflow: auto;
+  }
+
+  .pk-playfield--bastion .panel {
+    max-height: 100%;
+    padding: 6px 8px;
+    overflow: auto;
+    border-radius: 10px;
+  }
+
+  .pk-playfield--bastion .panel h2 {
+    margin-bottom: 2px;
+    font-size: 13px;
+  }
+
+  .pk-playfield--bastion .ov-kicker {
+    margin-bottom: 2px;
+    font-size: 8px;
+    line-height: 1.2;
+  }
+
+  .pk-playfield--bastion .ov-legend,
+  .pk-playfield--bastion .ov-hint,
+  .pk-playfield--bastion .ov-text {
+    display: none;
+  }
+
+  .pk-playfield--bastion .panel .btn {
+    min-height: 28px;
+    padding: 5px 10px;
+    font-size: 9px;
+  }
+
+  .pk-playfield--cazaluces .overlay {
+    padding: 6px;
+  }
+
+  .pk-playfield--cazaluces .panel {
+    max-height: 100%;
+    gap: 4px;
+    overflow: auto;
+  }
+
+  .pk-playfield--cazaluces .panel h2 {
+    font-size: 13px;
+  }
+
+  .pk-playfield--cazaluces .ov-kicker {
+    font-size: 8px;
+    letter-spacing: 0.12em;
+  }
+
+  .pk-playfield--cazaluces .ov-text {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .pk-playfield--cazaluces .ov-legend,
+  .pk-playfield--cazaluces .ov-hint {
+    display: none;
+  }
+
+  .pk-playfield--cazaluces .btn {
+    min-height: 28px;
+    padding: 6px 10px;
+    font-size: 9px;
+  }
+
+  .pk-playfield--serpiente .overlay {
+    gap: 4px;
+    padding: 6px;
+    overflow: auto;
+  }
+
+  .pk-playfield--serpiente .overlay h2 {
+    margin-bottom: 2px;
+    font-size: 14px;
+  }
+
+  .pk-playfield--serpiente .ov-kicker {
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+
+  .pk-playfield--serpiente .ov-text {
+    font-size: 9px;
+    line-height: 1.3;
+  }
+
+  .pk-playfield--serpiente .ov-legend,
+  .pk-playfield--serpiente .ov-hint {
+    display: none;
+  }
+
+  .pk-playfield--serpiente .overlay .btn {
+    min-height: 30px;
+    margin-top: 2px;
+    padding: 6px 12px;
+    font-size: 11px;
+  }
+
+  .pk-playfield--serpiente .recap {
+    gap: 10px;
+    margin: 2px 0;
+  }
+
+  .pk-playfield--serpiente .recap span:last-child {
+    font-size: 16px;
+  }
+
+  .pk-playfield--serpiente .boost-pill {
+    top: 4px;
+    gap: 4px;
+    padding: 3px 6px;
+    font-size: 8px;
+  }
+
+  .pk-playfield--serpiente .boost-bar {
+    width: 40px;
+  }
+
+  .pk-playfield--serpiente .pk-rewards__status,
+  .pk-playfield--cazaluces .pk-rewards__status,
+  .pk-playfield--prisma .pk-rewards__status,
+  .pk-playfield--bastion .pk-rewards__status {
+    grid-row: 4;
   }
 }

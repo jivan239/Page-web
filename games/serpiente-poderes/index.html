@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="description" content="Serpiente de Poderes: come manzanas, crece y activa el turbo. Juego arcade incluido en Playkora.">
+<meta name="description" content="Serpiente de Poderes: manzanas de poder, trampas, combos y segunda oportunidad con fantasma. Juego arcade incluido en Playkora.">
 <title>Serpiente de Poderes · Playkora</title>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='19' r='11' fill='%23ff4d5e'/%3E%3Cpath d='M16 7c1-3 4-4 6-4' stroke='%234fd17a' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/styles.css" />
@@ -28,7 +28,7 @@
   <header class="topbar">
     <div class="brand">
       <h1>Serpiente <span>de Poderes</span></h1>
-      <p class="tagline">Roja crece · Azul acelera · Dorada crece el doble</p>
+      <p class="tagline">Poderes, trampas y combos en cada manzana</p>
     </div>
   </header>
 
@@ -36,6 +36,7 @@
     <div class="stat"><span class="label">Puntos</span><span class="value" id="scoreEl">0</span></div>
     <div class="stat"><span class="label">Récord</span><span class="value" id="bestEl">0</span></div>
     <div class="stat"><span class="label">Largo</span><span class="value" id="lenEl">3</span></div>
+    <div class="stat"><span class="label">Combo</span><span class="value" id="comboEl">&times;1</span></div>
     <div class="stat"><span class="label">Velocidad</span><span class="value" id="speedEl">1.0&times;</span></div>
   </section>
 
@@ -43,18 +44,25 @@
     <canvas id="game" width="600" height="600"></canvas>
 
     <div class="boost-pill" id="boostPill" aria-hidden="true">
-      <span>TURBO</span>
+      <span class="boost-label">FIEBRE 2×</span>
       <div class="boost-bar"><i id="boostBar"></i></div>
-      <span id="boostTime">5.0s</span>
+      <span id="boostTime">0.0s</span>
     </div>
 
     <div class="overlay" id="overlay"></div>
   </section>
 
   <footer class="legend">
-    <span><i class="dot red"></i>Manzana roja <b>+1</b></span>
-    <span><i class="dot blue"></i>Manzana azul <b>+1 y 5 s de turbo</b></span>
-    <span><i class="dot gold"></i>Manzana dorada <b>+2</b></span>
+    <span><i class="dot red"></i>Roja <b>crece</b></span>
+    <span><i class="dot gold"></i>Dorada <b>fiebre 8 s · 3 manzanas</b></span>
+    <span><i class="dot ghost"></i>Azul <b>fantasma 6 s</b></span>
+    <span><i class="dot magnet"></i>Morada <b>imán 8 s</b></span>
+    <span><i class="dot ice"></i>Celeste <b>hielo 7 s</b></span>
+    <span><i class="dot lime"></i>Lima <b>recorta 3 o 4</b></span>
+    <span><i class="dot turbo"></i>Brillante <b>turbo 5 s · comida ×3</b></span>
+    <span><i class="dot reverse"></i>Invertida <b>+120 al sobrevivir</b></span>
+    <span><i class="dot timed"></i>Temporizada <b>6 s</b></span>
+    <span><i class="dot bomb"></i>Negra <b>quita puntos y cola</b></span>
   </footer>
 </div>
   </div>

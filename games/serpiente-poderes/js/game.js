@@ -10,14 +10,27 @@
   const W = COLS * CELL;
   const H = ROWS * CELL;
 
-  const BOOST_MS   = 5000;   // duración del turbo de la manzana azul
-  const BONUS_LIFE = 9500;   // tiempo que permanece una manzana especial
-  const BOOST_MULT = 1.75;   // multiplicador de velocidad durante el turbo
+  const FEVER_MS       = 8000;   // fiebre de puntos: manzanas normales x2 y 3 a la vez
+  const GHOST_MS       = 6000;   // atraviesa cuerpo y bordes
+  const MAGNET_MS      = 8000;   // atrae manzanas cercanas
+  const ICE_MS         = 7000;   // velocidad x0,65
+  const TURBO_MS       = 5000;   // velocidad x2 y comida x3
+  const REVERSE_MS     = 4000;   // controles invertidos
+  const BOMB_MS        = 9000;   // obstáculo temporal
+  const TIMED_MS       = 6000;   // manzana que parpadea y vale más cuanto antes se come
+  const REVIVE_GHOST_MS = 3000;  // fantasma al usar el anuncio de segunda oportunidad
+  const BONUS_MS       = 9500;   // tiempo en pantalla de las manzanas especiales
+  const REVERSE_REWARD = 120;    // premio por sobrevivir a los controles invertidos
+  const HIGH_SCORE_REVIVE = 250; // a partir de aquí se ofrece revivir al chocar
+  const COMBO_WINDOW   = 3000;
+  const COMBO_MAX      = 4;
+  const FEVER_APPLES   = 3;
 
-  const RED_GROWTH  = 1;
-  const GOLD_GROWTH = 2;     // "el doble"
-
-  const PTS = { red: 10, blue: 15, gold: 30 };
+  const RED_GROWTH = 1;
+  const PTS = {
+    red: 10, gold: 35, ghost: 25, magnet: 25, ice: 25,
+    lime: 20, turbo: 30, reverse: 15, timed: 0
+  };
 
   const TAU = Math.PI * 2;
 
@@ -36,8 +49,10 @@
     best: document.getElementById('bestEl'),
     len: document.getElementById('lenEl'),
     speed: document.getElementById('speedEl'),
+    combo: document.getElementById('comboEl'),
     overlay: document.getElementById('overlay'),
     boostPill: document.getElementById('boostPill'),
+    boostLabel: document.querySelector('#boostPill .boost-label'),
     boostBar: document.getElementById('boostBar'),
     boostTime: document.getElementById('boostTime'),
     sound: document.getElementById('soundBtn'),
@@ -51,8 +66,9 @@
 
   let state = STATE.START;
 
-  let snake, dir, inputQueue, growth, score, best, redApple, bonuses, particles;
-  let stepTimer, boostMs, shake, flash, overAt, deathReason;
+  let snake, dir, inputQueue, growth, score, best, apples, bonuses, particles;
+  let stepTimer, shake, flash, overAt, deathReason;
+  let effects, combo, lastEatAt, reversePending;
 
   let muted = false;
   let hudCache = {};
@@ -137,15 +153,22 @@
     osc.stop(t0 + dur + 0.03);
   }
 
-  function sfx(kind) {
+  function sfx(kind, level) {
     if (muted) return;
     switch (kind) {
       case 'red':
         playTone(620, 0.11, 'triangle', 0.07, 900);
         break;
-      case 'blue':
-        playTone(380, 0.26, 'sine', 0.07, 1180);
-        playTone(760, 0.22, 'sine', 0.035, 1560, 0.02);
+      case 'power':
+        playTone(440, 0.16, 'sine', 0.06, 880);
+        playTone(660, 0.18, 'triangle', 0.04, 1320, 0.05);
+        break;
+      case 'combo':
+        playTone(520 + level * 190, 0.09, 'triangle', 0.05, 900 + level * 240);
+        break;
+      case 'bomb':
+        playTone(180, 0.28, 'sawtooth', 0.08, 60);
+        playTone(90, 0.36, 'square', 0.035, 40, 0.03);
         break;
       case 'gold':
         playTone(880, 0.12, 'triangle', 0.06);
@@ -178,15 +201,19 @@
     inputQueue = [];
     growth = 0;
     score = 0;
+    apples = [];
     bonuses = [];
     particles = [];
     stepTimer = 0;
-    boostMs = 0;
     shake = 0;
     flash = 0;
     deathReason = '';
-    redApple = null;
-    redApple = spawnCell();
+    effects = { fever: 0, ghost: 0, magnet: 0, ice: 0, turbo: 0, reverse: 0 };
+    combo = 1;
+    lastEatAt = 0;
+    reversePending = false;
+    const spot = spawnCell();
+    if (spot) apples.push(spot);
     hudCache = {};
   }
 
@@ -200,11 +227,12 @@
     rewards = new RewardManager();
     rewardsUI = window.PlaykoraRewardsUI.mount({
       host: '#pkAdHost',
-      bonusLabel: 'Turbo de 5 s',
-      canLife: () => state === STATE.OVER,
+      lifeLabel: 'Revivir + Fantasma 3 s',
+      bonusLabel: 'Fantasma 3 s',
+      canLife: () => state === STATE.OVER && score >= HIGH_SCORE_REVIVE,
       canBonus: () => state === STATE.PLAYING,
       onLife: () => claimLife(REWARDS.LIFE),
-      onBonus: () => claimTurbo(REWARDS.BONUS),
+      onBonus: () => claimBonus(REWARDS.BONUS),
       refresh: syncRewardUi,
     });
     syncRewardUi();
@@ -227,6 +255,10 @@
       rewardsUI.setStatus('La segunda oportunidad se usa al perder.');
       return false;
     }
+    if (score < HIGH_SCORE_REVIVE) {
+      rewardsUI.setStatus('Revivir disponible desde ' + HIGH_SCORE_REVIVE + ' puntos.');
+      return false;
+    }
     const claim = rewards.claim(type);
     if (!claim.ok) {
       rewardsUI.setStatus(claim.reason === 'limite' ? 'Ya usaste las 2 vidas extra.' : 'Anuncio no completado.');
@@ -241,9 +273,9 @@
     return true;
   }
 
-  function claimTurbo(type) {
+  function claimBonus(type) {
     if (state !== STATE.PLAYING) {
-      rewardsUI.setStatus('El turbo se usa durante la partida.');
+      rewardsUI.setStatus('El fantasma se usa durante la partida.');
       return false;
     }
     const claim = rewards.claim(type);
@@ -251,10 +283,10 @@
       rewardsUI.setStatus(claim.reason === 'limite' ? 'Recompensa ya usada.' : 'Anuncio no completado.');
       return false;
     }
-    boostMs = BOOST_MS;
-    sfx('reward');
+    effects.ghost = Math.max(effects.ghost, REVIVE_GHOST_MS);
+    sfx('power');
     syncRewardUi();
-    rewardsUI.setStatus('¡Turbo de 5 s conseguido!');
+    rewardsUI.setStatus('¡Fantasma de 3 s conseguido!');
     return true;
   }
 
@@ -269,19 +301,47 @@
     inputQueue = [];
     growth = 0;
     stepTimer = 0;
-    boostMs = BOOST_MS;
+    combo = 1;
+    lastEatAt = 0;
+    effects.fever = 0;
+    effects.magnet = 0;
+    effects.ice = 0;
+    effects.turbo = 0;
+    effects.ghost = REVIVE_GHOST_MS;
+    effects.reverse = 0;
+    reversePending = false;
+    apples = apples.filter((a) => !snake.some((s) => s.x === a.x && s.y === a.y));
+    bonuses = bonuses.filter((b) => !snake.some((s) => s.x === b.x && s.y === b.y));
+    syncApples();
     shake = 0;
     flash = 0;
     state = STATE.PLAYING;
     hideOverlay();
-    sfx('reward');
+    sfx('power');
     return true;
   }
+
+  const BONUS_COLORS = {
+    gold:   ['#fff3b8', '#ffcf4d', '#b8860b'],
+    ghost:  ['#dff6ff', '#8fe3ff', '#3aa7d8'],
+    magnet: ['#e9d6ff', '#b879ff', '#6b3fb0'],
+    ice:    ['#e8ffff', '#8ff2ff', '#39a9c9'],
+    lime:   ['#f2ffd0', '#b6ef56', '#5e9b20'],
+    turbo:  ['#ffd7a8', '#ff8a3d', '#b23b0b'],
+    reverse:['#ffd0f2', '#ff5fb5', '#a01068'],
+    timed:  ['#fff7d6', '#ffe38a', '#d19a1d'],
+    bomb:   ['#5b5b68', '#24242e', '#0a0a10']
+  };
+
+  const BONUS_POOL = [
+    ['gold', 12], ['ghost', 12], ['magnet', 10], ['ice', 10], ['lime', 10],
+    ['turbo', 8], ['reverse', 7], ['timed', 12], ['bomb', 9]
+  ];
 
   function spawnCell() {
     const taken = new Set();
     for (const s of snake) taken.add(key(s.x, s.y));
-    if (redApple) taken.add(key(redApple.x, redApple.y));
+    for (const a of apples) taken.add(key(a.x, a.y));
     for (const b of bonuses) taken.add(key(b.x, b.y));
 
     const free = [];
@@ -294,13 +354,83 @@
     return free[(Math.random() * free.length) | 0];
   }
 
+  function syncApples() {
+    const target = effects.fever > 0 ? FEVER_APPLES : 1;
+    while (apples.length < target) {
+      const spot = spawnCell();
+      if (!spot) break;
+      apples.push(spot);
+    }
+    while (apples.length > target) apples.pop();
+  }
+
+  function speedFactor() {
+    let factor = 1;
+    if (effects.turbo > 0) factor *= 2;
+    if (effects.ice > 0) factor *= 0.65;
+    return factor;
+  }
+
   function baseInterval() {
     return Math.max(78, 145 - score * 0.55);
   }
 
   function currentInterval() {
-    const base = baseInterval();
-    return boostMs > 0 ? base / BOOST_MULT : base;
+    return Math.max(45, baseInterval() / speedFactor());
+  }
+
+  function registerEat(base, now, normal) {
+    if (lastEatAt && now - lastEatAt <= COMBO_WINDOW) {
+      combo = Math.min(COMBO_MAX, combo + 1);
+    } else {
+      combo = 1;
+    }
+    lastEatAt = now;
+
+    let points = base * combo;
+    if (normal && effects.fever > 0) points *= 2;
+    if (effects.turbo > 0) points *= 3;
+    points = Math.round(points);
+    score += points;
+    sfx('combo', combo);
+    return points;
+  }
+
+  function trimTail(amount) {
+    const available = Math.max(0, snake.length + growth - 3);
+    const remove = Math.min(available, amount);
+    if (remove <= 0) return;
+    const fromSnake = Math.min(snake.length - 3, remove);
+    if (fromSnake > 0) snake.splice(snake.length - fromSnake, fromSnake);
+    growth = Math.max(0, growth - (remove - fromSnake));
+  }
+
+  function applyMagnet() {
+    if (effects.magnet <= 0) return;
+    const head = snake[0];
+    const taken = new Set();
+    for (const s of snake) taken.add(key(s.x, s.y));
+    for (const a of apples) taken.add(key(a.x, a.y));
+    for (const b of bonuses) taken.add(key(b.x, b.y));
+
+    const fruits = apples.concat(bonuses.filter((b) => b.type !== 'bomb'));
+    for (const fruit of fruits) {
+      const dx = head.x - fruit.x;
+      const dy = head.y - fruit.y;
+      if ((!dx && !dy) || Math.abs(dx) + Math.abs(dy) > 4) continue;
+
+      const moveX = Math.abs(dx) >= Math.abs(dy) ? Math.sign(dx) : 0;
+      const moveY = moveX === 0 ? Math.sign(dy) : 0;
+      const nx = fruit.x + moveX;
+      const ny = fruit.y + moveY;
+      if (nx < 0 || ny < 0 || nx >= COLS || ny >= ROWS) continue;
+      if (taken.has(key(nx, ny))) continue;
+
+      taken.delete(key(fruit.x, fruit.y));
+      fruit.x = nx;
+      fruit.y = ny;
+      taken.add(key(nx, ny));
+    }
   }
 
   function step() {
@@ -309,81 +439,141 @@
       if (nd.x !== -dir.x || nd.y !== -dir.y) dir = nd;
     }
 
+    applyMagnet();
+
     const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
 
-    // paredes
-    if (head.x < 0 || head.y < 0 || head.x >= COLS || head.y >= ROWS) {
-      die('warm');
-      return;
-    }
-
-    // colisión con el propio cuerpo (la cola se libera si no estamos creciendo)
-    const limit = growth > 0 ? snake.length : snake.length - 1;
-    for (let i = 0; i < limit; i++) {
-      if (snake[i].x === head.x && snake[i].y === head.y) {
-        die('cold');
+    if (effects.ghost > 0) {
+      head.x = (head.x + COLS) % COLS;
+      head.y = (head.y + ROWS) % ROWS;
+    } else {
+      if (head.x < 0 || head.y < 0 || head.x >= COLS || head.y >= ROWS) {
+        die('warm');
         return;
+      }
+      const limit = growth > 0 ? snake.length : snake.length - 1;
+      for (let i = 0; i < limit; i++) {
+        if (snake[i].x === head.x && snake[i].y === head.y) {
+          die('cold');
+          return;
+        }
       }
     }
 
     snake.unshift(head);
 
-    // manzanas especiales
     for (let i = bonuses.length - 1; i >= 0; i--) {
       if (bonuses[i].x === head.x && bonuses[i].y === head.y) {
-        eatBonus(bonuses[i]);
+        const bonus = bonuses[i];
         bonuses.splice(i, 1);
+        if (bonus.type === 'bomb') hitBomb(bonus);
+        else eatBonus(bonus);
       }
     }
 
-    // manzana roja
-    if (redApple && head.x === redApple.x && head.y === redApple.y) {
-      eatRed();
+    for (let i = apples.length - 1; i >= 0; i--) {
+      if (apples[i].x === head.x && apples[i].y === head.y) {
+        const apple = apples[i];
+        apples.splice(i, 1);
+        eatApple(apple);
+      }
     }
 
     if (growth > 0) growth--;
     else snake.pop();
+
+    syncApples();
   }
 
-  function eatRed() {
-    score += PTS.red;
+  function eatApple(apple) {
+    registerEat(PTS.red, performance.now(), true);
     growth += RED_GROWTH;
-    burst(cellX(redApple.x), cellY(redApple.y), ['#ff6b78', '#ff4d5e', '#ffd0d4'], 14, 150);
+    burst(cellX(apple.x), cellY(apple.y), ['#ff9aa4', '#ff4d5e', '#ffd0d4'], 14, 150);
     sfx('red');
-    redApple = null;
     maybeSpawnBonus();
-    redApple = spawnCell();
+  }
+
+  function pickBonusType() {
+    const total = BONUS_POOL.reduce((sum, item) => sum + item[1], 0);
+    let roll = Math.random() * total;
+    for (const [type, weight] of BONUS_POOL) {
+      roll -= weight;
+      if (roll <= 0) return type;
+    }
+    return 'gold';
   }
 
   function maybeSpawnBonus() {
     if (bonuses.length >= 2) return;
-    if (Math.random() > 0.42) return;
+    if (Math.random() > 0.55) return;
     const spot = spawnCell();
     if (!spot) return;
-    bonuses.push({
-      x: spot.x,
-      y: spot.y,
-      type: Math.random() < 0.62 ? 'blue' : 'gold',
-      life: BONUS_LIFE,
-      maxLife: BONUS_LIFE
-    });
+    const type = pickBonusType();
+    const life = type === 'timed' ? TIMED_MS : type === 'bomb' ? BOMB_MS : BONUS_MS;
+    bonuses.push({ x: spot.x, y: spot.y, type, life, maxLife: life });
+  }
+
+  function hitBomb(bomb) {
+    score = Math.max(0, score - 60);
+    combo = 1;
+    lastEatAt = 0;
+    trimTail(4);
+    shake = Math.max(shake, 9);
+    flash = 0.35;
+    burst(cellX(bomb.x), cellY(bomb.y), BONUS_COLORS.bomb.concat('#ff5a5a'), 22, 210);
+    sfx('bomb');
   }
 
   function eatBonus(b) {
-    if (b.type === 'blue') {
-      score += PTS.blue;
-      growth += 1;
-      boostMs = BOOST_MS;
-      burst(cellX(b.x), cellY(b.y), ['#8fe3ff', '#4dc3ff', '#d6f4ff'], 18, 190);
-      sfx('blue');
-    } else {
-      score += PTS.gold;
-      growth += GOLD_GROWTH;
-      shake = Math.max(shake, 7);
-      flash = 0.5;
-      burst(cellX(b.x), cellY(b.y), ['#ffe58a', '#ffcf4d', '#fff6cf'], 24, 220);
-      sfx('gold');
+    const now = performance.now();
+    const colors = BONUS_COLORS[b.type] || BONUS_COLORS.gold;
+
+    switch (b.type) {
+      case 'gold':
+        registerEat(PTS.gold, now, false);
+        effects.fever = Math.max(effects.fever, FEVER_MS);
+        syncApples();
+        shake = Math.max(shake, 7);
+        flash = 0.5;
+        break;
+      case 'ghost':
+        registerEat(PTS.ghost, now, false);
+        effects.ghost = Math.max(effects.ghost, GHOST_MS);
+        growth += 1;
+        break;
+      case 'magnet':
+        registerEat(PTS.magnet, now, false);
+        effects.magnet = Math.max(effects.magnet, MAGNET_MS);
+        growth += 1;
+        break;
+      case 'ice':
+        registerEat(PTS.ice, now, false);
+        effects.ice = Math.max(effects.ice, ICE_MS);
+        growth += 1;
+        break;
+      case 'lime':
+        registerEat(PTS.lime, now, false);
+        trimTail(3 + (Math.random() < 0.5 ? 0 : 1));
+        break;
+      case 'turbo':
+        registerEat(PTS.turbo, now, false);
+        effects.turbo = Math.max(effects.turbo, TURBO_MS);
+        break;
+      case 'reverse':
+        registerEat(PTS.reverse, now, false);
+        effects.reverse = Math.max(effects.reverse, REVERSE_MS);
+        reversePending = true;
+        break;
+      case 'timed': {
+        const value = 20 + Math.round(70 * clamp(b.life / b.maxLife, 0, 1));
+        registerEat(value, now, false);
+        growth += 1;
+        break;
+      }
     }
+
+    burst(cellX(b.x), cellY(b.y), colors, 20, 200);
+    if (b.type !== 'gold') sfx('power');
   }
 
   function die(reason) {
@@ -435,6 +625,11 @@
       startGame();
     }
     if (state !== STATE.PLAYING) return;
+
+    if (effects.reverse > 0) {
+      x = -x;
+      y = -y;
+    }
 
     const ref = inputQueue.length ? inputQueue[inputQueue.length - 1] : dir;
     if (ref.x === -x && ref.y === -y) return;   // no se puede girar 180°
@@ -576,18 +771,37 @@
 
     if (state !== STATE.PLAYING) return;
 
-    if (boostMs > 0) boostMs = Math.max(0, boostMs - dt * 1000);
+    const ms = dt * 1000;
+    const feverWasActive = effects.fever > 0;
+    const reverseWasActive = effects.reverse > 0;
+
+    for (const name of Object.keys(effects)) {
+      if (effects[name] > 0) effects[name] = Math.max(0, effects[name] - ms);
+    }
+
+    if (feverWasActive && effects.fever === 0) syncApples();
+
+    if (reverseWasActive && effects.reverse === 0 && reversePending) {
+      reversePending = false;
+      score += REVERSE_REWARD;
+      burst(cellX(snake[0].x), cellY(snake[0].y), BONUS_COLORS.reverse, 22, 190);
+      sfx('reward');
+      rewardsUI && rewardsUI.setStatus('¡Sobreviviste! +' + REVERSE_REWARD + ' puntos');
+    }
+
+    if (lastEatAt && performance.now() - lastEatAt > COMBO_WINDOW) combo = 1;
 
     for (let i = bonuses.length - 1; i >= 0; i--) {
       const b = bonuses[i];
-      b.life -= dt * 1000;
+      b.life -= ms;
       if (b.life <= 0) {
-        burst(cellX(b.x), cellY(b.y), b.type === 'blue' ? ['#4dc3ff', '#2b7fa8'] : ['#ffcf4d', '#a8801d'], 7, 90);
+        const colors = BONUS_COLORS[b.type] || BONUS_COLORS.gold;
+        burst(cellX(b.x), cellY(b.y), colors, 7, 90);
         bonuses.splice(i, 1);
       }
     }
 
-    stepTimer += dt * 1000;
+    stepTimer += ms;
     let guard = 0;
 
     while (state === STATE.PLAYING && stepTimer >= currentInterval()) {
@@ -601,10 +815,133 @@
      Dibujo
      ========================================================= */
   const PALETTES = {
-    red:  { hi: '#ff9aa4', mid: '#ff4d5e', lo: '#b81f36', glow: 'rgba(255,77,94,.85)' },
-    blue: { hi: '#a5ebff', mid: '#4dc3ff', lo: '#1b74b8', glow: 'rgba(77,195,255,.9)' },
-    gold: { hi: '#fff3b8', mid: '#ffcf4d', lo: '#b8860b', glow: 'rgba(255,207,77,.9)' }
+    red:     { hi: '#ff9aa4', mid: '#ff4d5e', lo: '#b81f36', glow: 'rgba(255,77,94,.85)' },
+    gold:    { hi: '#fff3b8', mid: '#ffcf4d', lo: '#b8860b', glow: 'rgba(255,207,77,.9)' },
+    ghost:   { hi: '#dff6ff', mid: '#8fe3ff', lo: '#3aa7d8', glow: 'rgba(143,227,255,.9)' },
+    magnet:  { hi: '#e9d6ff', mid: '#b879ff', lo: '#6b3fb0', glow: 'rgba(184,121,255,.9)' },
+    ice:     { hi: '#e8ffff', mid: '#8ff2ff', lo: '#39a9c9', glow: 'rgba(143,242,255,.9)' },
+    lime:    { hi: '#f2ffd0', mid: '#b6ef56', lo: '#5e9b20', glow: 'rgba(182,239,86,.9)' },
+    turbo:   { hi: '#ffd7a8', mid: '#ff8a3d', lo: '#b23b0b', glow: 'rgba(255,138,61,.9)' },
+    reverse: { hi: '#ffd0f2', mid: '#ff5fb5', lo: '#a01068', glow: 'rgba(255,95,181,.9)' },
+    timed:   { hi: '#fff7d6', mid: '#ffe38a', lo: '#d19a1d', glow: 'rgba(255,227,138,.9)' },
+    bomb:    { hi: '#5b5b68', mid: '#24242e', lo: '#0a0a10', glow: 'rgba(120,120,150,.75)' }
   };
+
+  function drawMark(cx, cy, r, kind, now) {
+    ctx.save();
+    ctx.strokeStyle = kind === 'bomb' ? '#d7d7e4' : 'rgba(10,24,32,.9)';
+    ctx.fillStyle = kind === 'bomb' ? '#d7d7e4' : 'rgba(10,24,32,.9)';
+    ctx.lineWidth = Math.max(1.5, r * 0.14);
+    ctx.lineCap = 'round';
+    ctx.lineJoin = 'round';
+
+    switch (kind) {
+      case 'ghost':
+        ctx.beginPath();
+        ctx.arc(cx - r * 0.25, cy - r * 0.05, r * 0.1, 0, TAU);
+        ctx.arc(cx + r * 0.25, cy - r * 0.05, r * 0.1, 0, TAU);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(cx - r * 0.45, cy + r * 0.42);
+        ctx.lineTo(cx - r * 0.22, cy + r * 0.22);
+        ctx.lineTo(cx, cy + r * 0.42);
+        ctx.lineTo(cx + r * 0.22, cy + r * 0.22);
+        ctx.lineTo(cx + r * 0.45, cy + r * 0.42);
+        ctx.stroke();
+        break;
+      case 'magnet':
+        ctx.lineWidth = Math.max(2.4, r * 0.24);
+        ctx.beginPath();
+        ctx.arc(cx, cy - r * 0.05, r * 0.52, Math.PI, 0);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx - r * 0.52, cy - r * 0.05);
+        ctx.lineTo(cx - r * 0.52, cy + r * 0.42);
+        ctx.moveTo(cx + r * 0.52, cy - r * 0.05);
+        ctx.lineTo(cx + r * 0.52, cy + r * 0.42);
+        ctx.stroke();
+        break;
+      case 'ice':
+        for (let i = 0; i < 3; i++) {
+          const a = i * Math.PI / 3;
+          const dx = Math.cos(a) * r * 0.62;
+          const dy = Math.sin(a) * r * 0.62;
+          ctx.beginPath();
+          ctx.moveTo(cx - dx, cy - dy);
+          ctx.lineTo(cx + dx, cy + dy);
+          ctx.stroke();
+        }
+        break;
+      case 'lime':
+        ctx.beginPath();
+        ctx.moveTo(cx - r * 0.5, cy - r * 0.5);
+        ctx.lineTo(cx + r * 0.4, cy + r * 0.4);
+        ctx.moveTo(cx + r * 0.5, cy - r * 0.5);
+        ctx.lineTo(cx - r * 0.4, cy + r * 0.4);
+        ctx.stroke();
+        for (const sx of [-1, 1]) {
+          ctx.beginPath();
+          ctx.arc(cx + sx * r * 0.52, cy + r * 0.52, r * 0.14, 0, TAU);
+          ctx.stroke();
+        }
+        break;
+      case 'turbo':
+        for (const sx of [-1, 1]) {
+          ctx.beginPath();
+          ctx.moveTo(cx + sx * r * 0.35 + r * 0.1, cy - r * 0.6);
+          ctx.lineTo(cx + sx * r * 0.35 - r * 0.3, cy + r * 0.05);
+          ctx.lineTo(cx + sx * r * 0.35, cy + r * 0.05);
+          ctx.lineTo(cx + sx * r * 0.35 - r * 0.1, cy + r * 0.6);
+          ctx.lineTo(cx + sx * r * 0.35 + r * 0.3, cy - r * 0.08);
+          ctx.lineTo(cx + sx * r * 0.35, cy - r * 0.08);
+          ctx.closePath();
+          ctx.fill();
+        }
+        break;
+      case 'reverse':
+        ctx.beginPath();
+        ctx.moveTo(cx - r * 0.6, cy - r * 0.25);
+        ctx.lineTo(cx + r * 0.6, cy - r * 0.25);
+        ctx.moveTo(cx - r * 0.6, cy + r * 0.25);
+        ctx.lineTo(cx + r * 0.6, cy + r * 0.25);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(cx - r * 0.6, cy - r * 0.25);
+        ctx.lineTo(cx - r * 0.25, cy - r * 0.5);
+        ctx.lineTo(cx - r * 0.25, cy);
+        ctx.moveTo(cx + r * 0.6, cy + r * 0.25);
+        ctx.lineTo(cx + r * 0.25, cy + r * 0.5);
+        ctx.lineTo(cx + r * 0.25, cy);
+        ctx.closePath();
+        ctx.fill();
+        break;
+      case 'timed': {
+        const wobble = Math.sin(now / 140) * r * 0.06;
+        ctx.beginPath();
+        ctx.moveTo(cx - r * 0.5, cy - r * 0.6);
+        ctx.lineTo(cx + r * 0.5, cy - r * 0.6);
+        ctx.lineTo(cx, cy + wobble);
+        ctx.lineTo(cx + r * 0.5, cy + r * 0.6);
+        ctx.lineTo(cx - r * 0.5, cy + r * 0.6);
+        ctx.lineTo(cx, cy + wobble);
+        ctx.closePath();
+        ctx.stroke();
+        break;
+      }
+      case 'bomb':
+        ctx.beginPath();
+        ctx.moveTo(cx + r * 0.05, cy - r * 0.45);
+        ctx.quadraticCurveTo(cx + r * 0.45, cy - r * 0.9, cx + r * 0.7, cy - r * 0.55);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.arc(cx, cy + r * 0.08, r * 0.12, 0, TAU);
+        ctx.arc(cx - r * 0.28, cy + r * 0.05, r * 0.12, 0, TAU);
+        ctx.arc(cx + r * 0.28, cy + r * 0.05, r * 0.12, 0, TAU);
+        ctx.fill();
+        break;
+    }
+    ctx.restore();
+  }
 
   function drawFruit(cx, cy, radius, kind, now) {
     const pal = PALETTES[kind];
@@ -633,34 +970,25 @@
     ctx.ellipse(cx - r * 0.34, cy - r * 0.38, r * 0.26, r * 0.16, -0.7, 0, TAU);
     ctx.fill();
 
-    // rabito
-    ctx.strokeStyle = '#6b4226';
-    ctx.lineWidth = 2;
-    ctx.lineCap = 'round';
-    ctx.beginPath();
-    ctx.moveTo(cx, cy - r * 0.78);
-    ctx.quadraticCurveTo(cx + 1, cy - r * 1.12, cx + 3.2, cy - r * 1.3);
-    ctx.stroke();
-
-    // hoja
-    ctx.fillStyle = '#4fd17a';
-    ctx.beginPath();
-    ctx.ellipse(cx + 6.2, cy - r * 1.12, 5, 2.5, -0.5, 0, TAU);
-    ctx.fill();
-
-    // marca del rayo en la azul
-    if (kind === 'blue') {
-      ctx.fillStyle = 'rgba(255,255,255,.92)';
+    if (kind !== 'bomb') {
+      // rabito
+      ctx.strokeStyle = '#6b4226';
+      ctx.lineWidth = 2;
+      ctx.lineCap = 'round';
       ctx.beginPath();
-      ctx.moveTo(cx + 1.2, cy - r * 0.55);
-      ctx.lineTo(cx - r * 0.42, cy + r * 0.14);
-      ctx.lineTo(cx - r * 0.02, cy + r * 0.14);
-      ctx.lineTo(cx - r * 0.22, cy + r * 0.62);
-      ctx.lineTo(cx + r * 0.46, cy - r * 0.16);
-      ctx.lineTo(cx + r * 0.04, cy - r * 0.16);
-      ctx.closePath();
+      ctx.moveTo(cx, cy - r * 0.78);
+      ctx.quadraticCurveTo(cx + 1, cy - r * 1.12, cx + 3.2, cy - r * 1.3);
+      ctx.stroke();
+
+      // hoja
+      ctx.fillStyle = '#4fd17a';
+      ctx.beginPath();
+      ctx.ellipse(cx + 6.2, cy - r * 1.12, 5, 2.5, -0.5, 0, TAU);
       ctx.fill();
     }
+
+    // símbolo del poder o trampa
+    drawMark(cx, cy, r, kind, now);
 
     // destellos dorados
     if (kind === 'gold') {
@@ -688,14 +1016,18 @@
 
   function drawSnake(now) {
     const n = snake.length;
-    const boosted = boostMs > 0;
+    const ghost = effects.ghost > 0;
+    const boosted = effects.turbo > 0;
 
-    // aura cuando hay turbo
-    if (boosted) {
+    ctx.save();
+    if (ghost) ctx.globalAlpha = 0.52;
+
+    // aura de turbo o fantasma
+    if (boosted || ghost) {
       ctx.save();
-      ctx.shadowColor = 'rgba(77,195,255,.85)';
+      ctx.shadowColor = ghost ? 'rgba(143,227,255,.85)' : 'rgba(255,138,61,.85)';
       ctx.shadowBlur = 18;
-      ctx.fillStyle = 'rgba(77,195,255,.11)';
+      ctx.fillStyle = ghost ? 'rgba(143,227,255,.13)' : 'rgba(255,138,61,.13)';
       for (const s of snake) {
         roundRect(s.x * CELL + 1, s.y * CELL + 1, CELL - 2, CELL - 2, 8);
         ctx.fill();
@@ -719,8 +1051,8 @@
 
       ctx.save();
       if (i === 0) {
-        ctx.shadowColor = 'rgba(70,240,138,.75)';
-        ctx.shadowBlur = boosted ? 22 : 14;
+        ctx.shadowColor = ghost ? 'rgba(143,227,255,.8)' : 'rgba(70,240,138,.75)';
+        ctx.shadowBlur = boosted || ghost ? 22 : 14;
       } else if (i < 4) {
         ctx.shadowColor = 'rgba(70,240,138,.35)';
         ctx.shadowBlur = 8;
@@ -777,6 +1109,8 @@
       ctx.lineTo(tipX, tipY);
       ctx.stroke();
     }
+
+    ctx.restore();
   }
 
   function drawParticles() {
@@ -826,24 +1160,30 @@
       ctx.translate(rand(-shake, shake) * 0.7, rand(-shake, shake) * 0.7);
     }
 
-    // manzana roja
-    if (redApple) drawFruit(cellX(redApple.x), cellY(redApple.y), CELL * 0.37, 'red', now);
+    // manzanas normales (1 o 3 durante la fiebre)
+    for (const a of apples) {
+      drawFruit(cellX(a.x), cellY(a.y), CELL * 0.37, 'red', now);
+    }
 
-    // manzanas especiales
+    // poderes, trampas y manzana temporizada
     for (const b of bonuses) {
       const cx = cellX(b.x);
       const cy = cellY(b.y);
       const r = CELL * 0.37;
+      const pal = PALETTES[b.type] || PALETTES.gold;
 
       // anillo de tiempo restante
       const frac = clamp(b.life / b.maxLife, 0, 1);
-      const blink = b.life < 2200 && Math.floor(now / 160) % 2 === 0;
+      const blink = b.type === 'timed' && Math.floor(now / 150) % 2 === 0;
 
-      if (!blink) drawFruit(cx, cy, r, b.type, now);
+      ctx.save();
+      ctx.globalAlpha = blink ? 0.22 : 1;
+      drawFruit(cx, cy, r, b.type, now);
+      ctx.restore();
 
       ctx.save();
       ctx.globalAlpha = blink ? 0.35 : 0.9;
-      ctx.strokeStyle = b.type === 'blue' ? 'rgba(77,195,255,.85)' : 'rgba(255,207,77,.85)';
+      ctx.strokeStyle = b.type === 'bomb' ? 'rgba(255,90,90,.9)' : pal.mid;
       ctx.lineWidth = 2;
       ctx.beginPath();
       ctx.arc(cx, cy, r + 6, -Math.PI / 2, -Math.PI / 2 + TAU * frac);
@@ -879,22 +1219,47 @@
     node.textContent = value;
   }
 
+  const EFFECT_INFO = {
+    fever:   { label: 'FIEBRE 2×', ms: FEVER_MS },
+    ghost:   { label: 'FANTASMA', ms: GHOST_MS },
+    magnet:  { label: 'IM\u00C1N', ms: MAGNET_MS },
+    ice:     { label: 'HIELO', ms: ICE_MS },
+    turbo:   { label: 'TURBO 3×', ms: TURBO_MS },
+    reverse: { label: 'INVERTIDO', ms: REVERSE_MS }
+  };
+
   function syncHud() {
     setText(el.score, String(score), 'score');
     setText(el.best, String(best), 'best');
     setText(el.len, String(snake.length), 'len');
 
-    if (boostMs > 0) {
-      setText(el.speed, BOOST_MULT.toFixed(1) + '\u00D7', 'speed');
-      if (!el.speed.classList.contains('boost')) el.speed.classList.add('boost');
+    if (el.combo) {
+      setText(el.combo, '\u00D7' + combo, 'combo');
+      el.combo.classList.toggle('hot', combo > 1);
+    }
 
+    const speed = speedFactor();
+    setText(el.speed, speed.toFixed(2).replace(/0$/, '') + '\u00D7', 'speed');
+    el.speed.classList.toggle('boost', speed !== 1);
+
+    let active = null;
+    for (const name of Object.keys(EFFECT_INFO)) {
+      if (effects[name] > 0) {
+        active = name;
+        break;
+      }
+    }
+
+    if (active) {
+      const info = EFFECT_INFO[active];
       el.boostPill.classList.add('on');
-      el.boostBar.style.width = (boostMs / BOOST_MS * 100) + '%';
-      el.boostTime.textContent = (boostMs / 1000).toFixed(1) + 's';
+      el.boostPill.dataset.effect = active;
+      setText(el.boostLabel, info.label, 'effectLabel');
+      el.boostBar.style.width = clamp(effects[active] / info.ms * 100, 0, 100) + '%';
+      el.boostTime.textContent = (effects[active] / 1000).toFixed(1) + 's';
     } else {
-      setText(el.speed, '1.0\u00D7', 'speed');
-      el.speed.classList.remove('boost');
       el.boostPill.classList.remove('on');
+      el.boostPill.dataset.effect = '';
     }
   }
 
@@ -908,11 +1273,18 @@
       html =
         '<p class="ov-kicker">Listo para jugar</p>' +
         '<h2>Serpiente de Poderes</h2>' +
-        '<p class="ov-text">Come manzanas rojas para crecer. Atrapa las azules y las doradas antes de que desaparezcan.</p>' +
+        '<p class="ov-text">Come en menos de 3 s para subir el combo (\u00D72, \u00D73, \u00D74). Cada manzana especial cambia la partida.</p>' +
         '<ul class="ov-legend">' +
-          '<li><i class="dot red"></i>Roja: +1</li>' +
-          '<li><i class="dot blue"></i>Azul: +1 y turbo 5 s</li>' +
-          '<li><i class="dot gold"></i>Dorada: +2</li>' +
+          '<li><i class="dot red"></i>Roja: crece</li>' +
+          '<li><i class="dot gold"></i>Dorada: fiebre 8 s y 3 manzanas</li>' +
+          '<li><i class="dot ghost"></i>Azul: fantasma 6 s</li>' +
+          '<li><i class="dot magnet"></i>Morada: im\u00E1n 8 s</li>' +
+          '<li><i class="dot ice"></i>Celeste: hielo 7 s</li>' +
+          '<li><i class="dot lime"></i>Verde: recorta 3 o 4</li>' +
+          '<li><i class="dot turbo"></i>Roja brillante: turbo 5 s \u00D73</li>' +
+          '<li><i class="dot reverse"></i>Invertida: \u00A1sobrevive y gana +120!</li>' +
+          '<li><i class="dot timed"></i>Temporizada: 6 s, vale m\u00E1s cuanto antes</li>' +
+          '<li><i class="dot bomb"></i>Negra: bomba, quita puntos y cola</li>' +
         '</ul>' +
         '<button class="btn" data-action="start">Empezar</button>' +
         '<p class="ov-hint"><kbd>&larr;</kbd><kbd>&uarr;</kbd><kbd>&darr;</kbd><kbd>&rarr;</kbd> o <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> para moverte · <kbd>Espacio</kbd> pausa</p>';
@@ -924,6 +1296,7 @@
         '<button class="btn" data-action="resume">Continuar</button>';
     } else {
       const isBest = score > 0 && score >= best;
+      const canRevive = Boolean(monetization && rewards && rewards.livesLeft > 0 && score >= HIGH_SCORE_REVIVE);
       html =
         '<p class="ov-kicker">Fin del juego</p>' +
         '<h2>' + (deathReason === 'warm' ? '\u00A1Choque contra el muro!' : '\u00A1Te mordiste!') + '</h2>' +
@@ -932,9 +1305,12 @@
           '<div><span>Récord</span><span>' + best + '</span></div>' +
           '<div><span>Largo</span><span>' + snake.length + '</span></div>' +
         '</div>' +
-        '<p class="ov-text">' + (isBest ? '\u00A1Nuevo récord! ' : '') + 'Las doradas valen 30 puntos y crecen el doble.</p>' +
+        '<p class="ov-text">' + (isBest ? '\u00A1Nuevo récord! ' : '') +
+          (canRevive ? 'Puedes revivir una vez con fantasma de 3 s.' : 'La segunda oportunidad aparece desde ' + HIGH_SCORE_REVIVE + ' puntos.') + '</p>' +
         '<button class="btn" data-action="start">Jugar de nuevo</button>' +
-        '<button class="btn" type="button" data-action="reward-life">Segunda oportunidad (anuncio)</button>' +
+        (canRevive
+          ? '<button class="btn btn--reward" type="button" data-action="reward-life">Revivir con Fantasma 3 s (anuncio)</button>'
+          : '') +
         '<p class="ov-hint"><kbd>Espacio</kbd> o <kbd>R</kbd> para reiniciar</p>';
     }
 
@@ -996,6 +1372,64 @@
   /* =========================================================
      Arranque
      ========================================================= */
+  /* =========================================================
+      Hook de pruebas (solo con ?debug en la URL)
+      ========================================================= */
+  if (/(?:^|[?&])debug(?:[=&]|$)/.test(location.search)) {
+    window.__serpiente = {
+      snapshot: function () {
+        return {
+          state: state,
+          score: score,
+          best: best,
+          combo: combo,
+          dir: { x: dir.x, y: dir.y },
+          snake: snake.map((s) => ({ x: s.x, y: s.y })),
+          apples: apples.map((a) => ({ x: a.x, y: a.y })),
+          bonuses: bonuses.map((b) => ({ x: b.x, y: b.y, type: b.type, life: b.life })),
+          effects: Object.assign({}, effects),
+          growth: growth,
+          speed: speedFactor()
+        };
+      },
+      start: startGame,
+      step: step,
+      tick: function (ms) { update(ms / 1000); syncHud(); return true; },
+      die: die,
+      queueDir: queueDir,
+      setScore: function (value) { score = value; },
+      moveApple: function (x, y) {
+        if (!apples.length) apples.push({ x: x, y: y });
+        else { apples[0].x = x; apples[0].y = y; }
+        return true;
+      },
+      eat: function (type, life) {
+        if (state !== STATE.PLAYING) startGame();
+        const head = snake[0];
+        const max = type === 'timed' ? TIMED_MS : type === 'bomb' ? BOMB_MS : BONUS_MS;
+        const bonus = { x: head.x, y: head.y, type: type, life: life === undefined ? max : life, maxLife: max };
+        if (type === 'bomb') hitBomb(bonus);
+        else eatBonus(bonus);
+        return true;
+      },
+      setEffect: function (name, ms) {
+        if (!(name in effects)) return false;
+        effects[name] = ms;
+        if (name === 'fever') syncApples();
+        if (name === 'reverse') reversePending = true;
+        return true;
+      },
+      spawn: function (type) {
+        if (state !== STATE.PLAYING) startGame();
+        const spot = spawnCell();
+        if (!spot) return false;
+        const life = type === 'timed' ? TIMED_MS : type === 'bomb' ? BOMB_MS : BONUS_MS;
+        bonuses.push({ x: spot.x, y: spot.y, type: type, life: life, maxLife: life });
+        return true;
+      }
+    };
+  }
+
   reset();
   showOverlay('start');
   requestAnimationFrame(loop);
