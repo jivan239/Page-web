@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#05060f" />
+    <meta
+      name="description"
+      content="Bastión Lumen: defensa de torretas original con oleadas, jefes y tres armas. Incluido en Playkora."
+    />
+    <title>Bastión Lumen · Playkora</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="../../css/consent.css" />
+    <link rel="stylesheet" href="../../css/rewards.css" />
+    <script src="../../js/ads-config.js"></script>
+    <script src="../../js/consent.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="appnav" aria-label="Navegación entre juegos">
+        <a class="appnav__back" href="../../">&larr; Playkora</a>
+        <span class="appnav__label">05 &middot; Bastión Lumen</span>
+      </nav>
+
+      <section class="machine" aria-label="Máquina de Bastión Lumen">
+        <header class="machine__top">
+          <div class="brand">
+            <h1>Bastión Lumen</h1>
+            <p class="tagline">Defiende el núcleo · 3 torretas</p>
+          </div>
+          <div class="actions">
+            <button
+              class="icon-btn"
+              type="button"
+              id="soundBtn"
+              aria-label="Silenciar sonido"
+              title="Sonido (M)"
+            >&#128266;</button>
+            <button
+              class="icon-btn"
+              type="button"
+              id="pauseBtn"
+              aria-label="Pausar el juego"
+              title="Pausa (P)"
+              disabled
+            >&#10074;&#10074;</button>
+          </div>
+        </header>
+
+        <section class="hud" aria-label="Marcadores">
+          <div class="stat">
+            <span class="label">Oro</span>
+            <span class="value" id="gold">180</span>
+          </div>
+          <div class="stat">
+            <span class="label">Núcleo</span>
+            <span class="value" id="hp">100</span>
+            <span class="meter" aria-hidden="true"><i id="hpBar"></i></span>
+          </div>
+          <div class="stat">
+            <span class="label">Oleada</span>
+            <span class="value" id="wave">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Mejor</span>
+            <span class="value" id="best">0</span>
+          </div>
+        </section>
+
+        <div class="statusbar" role="status" aria-live="polite">
+          <span id="statusText">Coloca torretas y prepara la defensa</span>
+          <span class="statusbar__speed" id="speedBadge">1x</span>
+        </div>
+
+        <div class="stage">
+          <canvas
+            id="game"
+            width="720"
+            height="560"
+            role="img"
+            aria-label="Circuito de Bastión Lumen: los enemigos avanzan desde la entrada hasta el núcleo"
+          ></canvas>
+          <div class="overlay" id="overlay" role="dialog" aria-live="polite"></div>
+        </div>
+
+        <div class="pk-ad-host" id="pkAdHost"></div>
+
+        <div class="controlbar">
+          <button class="btn btn--primary" type="button" id="waveBtn">
+            Iniciar siguiente oleada
+          </button>
+          <button class="btn" type="button" id="speedBtn">Velocidad 1x</button>
+        </div>
+
+        <section class="arsenal" aria-label="Torretas disponibles">
+          <button class="tower-card" type="button" data-build="basic" aria-pressed="false">
+            <span class="tower-card__dot tower-card__dot--basic" aria-hidden="true"></span>
+            <span class="tower-card__name">Básica</span>
+            <span class="tower-card__desc">Cadencia equilibrada</span>
+            <span class="tower-card__cost">60 oro</span>
+          </button>
+          <button class="tower-card" type="button" data-build="rapid" aria-pressed="false">
+            <span class="tower-card__dot tower-card__dot--rapid" aria-hidden="true"></span>
+            <span class="tower-card__name">Ligera</span>
+            <span class="tower-card__desc">Dispara muy rápido</span>
+            <span class="tower-card__cost">95 oro</span>
+          </button>
+          <button class="tower-card" type="button" data-build="heavy" aria-pressed="false">
+            <span class="tower-card__dot tower-card__dot--heavy" aria-hidden="true"></span>
+            <span class="tower-card__name">Pesada</span>
+            <span class="tower-card__desc">Alto daño en área</span>
+            <span class="tower-card__cost">145 oro</span>
+          </button>
+        </section>
+
+        <section class="inspector" id="inspector" aria-live="polite" hidden></section>
+
+        <p class="hint">
+          <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd> elegir · toca el tablero para
+          colocar · toca una torreta para mejorar o vender · <kbd>Espacio</kbd>
+          oleada · <kbd>F</kbd> velocidad · <kbd>M</kbd> sonido
+        </p>
+      </section>
+    </main>
+
+    <nav class="legal-links" aria-label="Información legal">
+      <a href="../../privacidad.html">Privacidad</a>
+      <a href="../../cookies.html">Cookies</a>
+      <a href="../../aviso-legal.html">Aviso legal</a>
+      <a href="../../sobre-nosotros.html">Sobre nosotros</a>
+      <a href="../../contacto.html">Contacto</a>
+      <button type="button" data-consent-open>Configurar cookies</button>
+    </nav>
+
+    <script src="../../js/rewards-ui.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script src="../../js/ads.js"></script>
+  </body>
+</html>

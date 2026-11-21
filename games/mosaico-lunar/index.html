@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#05060f" />
+    <meta
+      name="description"
+      content="Mosaico Lunar: puzzle original de teselas que caen. Gira, encaja y completa filas. Incluido en Playkora."
+    />
+    <title>Mosaico Lunar · Playkora</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="../../css/consent.css" />
+    <link rel="stylesheet" href="../../css/rewards.css" />
+    <script src="../../js/ads-config.js"></script>
+    <script src="../../js/consent.js"></script>
+  </head>
+  <body>
+    <main class="shell">
+      <nav class="appnav" aria-label="Navegación entre juegos">
+        <a class="appnav__back" href="../../">&larr; Playkora</a>
+        <span class="appnav__label">04 &middot; Mosaico Lunar</span>
+      </nav>
+
+      <section class="machine" aria-label="Máquina de Mosaico Lunar">
+        <header class="machine__top">
+          <div class="brand">
+            <h1>Mosaico Lunar</h1>
+            <p class="tagline">Ensambla la noche · 7 teselas</p>
+          </div>
+          <div class="actions">
+            <button
+              class="icon-btn"
+              type="button"
+              id="soundBtn"
+              aria-label="Silenciar sonido"
+              title="Sonido (M)"
+            >&#128266;</button>
+            <button
+              class="icon-btn"
+              type="button"
+              id="pauseBtn"
+              aria-label="Pausar el juego"
+              title="Pausa (P)"
+              disabled
+            >&#10074;&#10074;</button>
+          </div>
+        </header>
+
+        <section class="hud" aria-label="Marcadores">
+          <div class="stat">
+            <span class="label">Puntos</span>
+            <span class="value" id="score">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Récord</span>
+            <span class="value" id="best">0</span>
+          </div>
+          <div class="stat">
+            <span class="label">Nivel</span>
+            <span class="value" id="level">1</span>
+          </div>
+          <div class="stat">
+            <span class="label">Filas</span>
+            <span class="value" id="lines">0</span>
+          </div>
+        </section>
+
+        <div class="stage">
+          <canvas
+            id="game"
+            width="460"
+            height="600"
+            role="img"
+            aria-label="Pozo de Mosaico Lunar con teselas que caen, pieza fantasma y cola de siguientes piezas"
+          ></canvas>
+          <div class="overlay" id="overlay" role="dialog" aria-live="polite"></div>
+        </div>
+
+        <div class="pk-ad-host" id="pkAdHost"></div>
+
+        <div class="pad" aria-label="Controles táctiles">
+          <button type="button" data-act="rotate" aria-label="Girar la tesela">&#8634;</button>
+          <button type="button" data-act="drop" aria-label="Caída inmediata">&#10515;</button>
+          <button type="button" data-act="hold" aria-label="Guardar la tesela">&#8646;</button>
+          <button type="button" data-act="left" aria-label="Mover a la izquierda">&larr;</button>
+          <button type="button" data-act="down" aria-label="Bajar una fila">&darr;</button>
+          <button type="button" data-act="right" aria-label="Mover a la derecha">&rarr;</button>
+        </div>
+
+        <ul class="tessera-legend" aria-label="Teselas del mosaico">
+          <li><i class="dot dot--vara"></i>Vara</li>
+          <li><i class="dot dot--dado"></i>Dado</li>
+          <li><i class="dot dot--cruz"></i>Cruz</li>
+          <li><i class="dot dot--sierpe"></i>Sierpe</li>
+          <li><i class="dot dot--rayo"></i>Rayo</li>
+          <li><i class="dot dot--gancho"></i>Gancho</li>
+          <li><i class="dot dot--esquina"></i>Esquina</li>
+        </ul>
+
+        <p class="hint">
+          Flechas / WASD · <kbd>&uarr;</kbd> gira · <kbd>Espacio</kbd> caída ·
+          <kbd>C</kbd> guarda · <kbd>P</kbd> pausa · <kbd>M</kbd> sonido
+        </p>
+      </section>
+    </main>
+
+    <nav class="legal-links" aria-label="Información legal">
+      <a href="../../privacidad.html">Privacidad</a>
+      <a href="../../cookies.html">Cookies</a>
+      <a href="../../aviso-legal.html">Aviso legal</a>
+      <a href="../../sobre-nosotros.html">Sobre nosotros</a>
+      <a href="../../contacto.html">Contacto</a>
+      <button type="button" data-consent-open>Configurar cookies</button>
+    </nav>
+
+    <script src="../../js/rewards-ui.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script src="../../js/ads.js"></script>
+  </body>
+</html>

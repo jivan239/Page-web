@@ -1,0 +1,3 @@
+# Playkora · ads.txt
+# IMPORTANTE: sustituir pub-0000000000000000 por el ID real antes de publicar.
+google.com, pub-0000000000000000, DIRECT, f08c47fec0942fa0

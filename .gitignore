@@ -1,0 +1,30 @@
+# Sistema operativo y editores
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Dependencias y herramientas de Node (por si se añade build en el futuro)
+node_modules/
+npm-debug.log*
+
+# Logs, copias y archivos temporales
+*.log
+*.tmp
+*.bak
+*.orig
+
+# Docker local (la configuración del proyecto SÍ se versiona)
+docker-compose.override.yml
+
+# Entornos y secretos
+.env
+.env.*
+!.env.example
+
+# Python (scripts/configure-ads.py)
+__pycache__/
+*.py[cod]
