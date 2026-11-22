@@ -1,4 +1,5 @@
 import { Game } from './game.js';
+import { RESCUE_ROWS } from './config.js';
 import { Renderer } from './render.js';
 import { Sound } from './audio.js';
 import { REWARDS, RewardManager } from '../../../js/monetization.js';
@@ -48,8 +49,7 @@ function claimLife() {
     return false;
   }
   syncRewardUi();
-  rewardsUI.setStatus('¡Vida extra conseguida!');
-  return true;
+  return { status: `¡Vida extra conseguida! Se limpiaron ${RESCUE_ROWS} filas superiores.` };
 }
 
 function claimVara() {

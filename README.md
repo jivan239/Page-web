@@ -312,6 +312,7 @@ Freedoom se distribuye bajo licencia BSD; el motor Dwasm es GPL-2.0. Los textos 
 - Pieza fantasma, reserva (`C`, una vez por tesela), giro con ajuste lateral y retardo de anclaje.
 - Puntos por fila (100 / 300 / 500 / 800) multiplicados por nivel; 10 filas suben de nivel y aceleran la caída.
 - Récord persistente en `localStorage` (`mosaicoLunar:best`).
+- La vida extra con anuncio limpia las cinco filas superiores del pozo para reanudar con espacio.
 
 **Bastión Lumen**
 
@@ -330,7 +331,7 @@ Freedoom se distribuye bajo licencia BSD; el motor Dwasm es GPL-2.0. Los textos 
 - `Z` deshace la última jugada, `N` empieza de cero y `P` pausa. La partida también se pausa al cambiar de pestaña.
 - Se puede seguir jugando después de alcanzar 2048. La partida termina solo cuando no quedan movimientos.
 - Récord persistente en `localStorage` (`dosMil48:best`) y mute en `dosMil48:muted`.
-- Recompensas simuladas: recuperar la última jugada (continuar) o añadir una ficha 4.
+- Recompensas simuladas: continuar recuperando la jugada anterior y eliminando de 2 a 5 fichas pequeñas (deja al menos 5 casillas libres), o añadir una ficha 4.
 
 **Asteroids**
 
@@ -433,9 +434,9 @@ jugada y en Asteroids reanuda con una nave y escudo.
 | Prisma Asalto | Revivir con 1 vida al perder | Escudo de cristal 8 s y limpia balas |
 | Serpiente de Poderes | Revivir 1 vez con Fantasma 3 s (desde 250 puntos) | Fantasma 3 s durante la partida |
 | Cazaluces | Revivir con 1 vida | Asustar sombras |
-| Mosaico Lunar | Limpiar 3 filas superiores y reanudar | Tesela Vara al frente de la cola |
+| Mosaico Lunar | Limpiar 5 filas superiores y reanudar | Tesela Vara al frente de la cola |
 | Bastión Lumen | Reparar núcleo +30 HP | +100 oro |
-| 2048 | Recuperar la última jugada | Ficha 4 extra |
+| 2048 | Recuperar la jugada y eliminar 2-5 fichas pequeñas | Ficha 4 extra |
 | Asteroids | Reanudar con 1 nave y escudo | Escudo 8 s |
 
 El espacio, los botones y el modal del anuncio simulado están en

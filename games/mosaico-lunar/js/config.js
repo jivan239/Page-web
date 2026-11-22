@@ -1,6 +1,9 @@
 export const COLS = 10;
 export const ROWS = 20;
 
+/* Filas que se limpian al usar la vida extra con anuncio. */
+export const RESCUE_ROWS = 5;
+
 export const CELL = 28;
 export const BOARD_X = 18;
 export const BOARD_Y = 20;

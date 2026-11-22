@@ -7,6 +7,13 @@ export const STORAGE = Object.freeze({
   muted: 'dosMil48:muted',
 });
 
+/* Ventaja al continuar con anuncio: espacio libre y fichas pequeñas eliminadas. */
+export const RESCUE = Object.freeze({
+  freeCells: 5,
+  removeAtLeast: 2,
+  removeAtMost: 5,
+});
+
 /* Fondo y tinta de cada ficha. La última entrada también cubre valores > 2048. */
 export const PALETTE = Object.freeze({
   0: ['rgba(140, 170, 230, 0.10)', '#7e8db0'],

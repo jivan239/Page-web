@@ -1,6 +1,6 @@
 /* Lógica del 2048: tablero 4x4, fusiones, puntuación y recompensas. */
 
-import { SIZE, STORAGE } from './config.js';
+import { SIZE, STORAGE, RESCUE } from './config.js';
 import { onGameOver } from '../../../js/monetization.js';
 
 const emptyBoard = () => Array.from({ length: SIZE }, () => Array(SIZE).fill(0));
@@ -33,6 +33,7 @@ export class Game {
     this.snapshot = null;
     this.anim = null;
     this.lastCell = null;
+    this.lastRescue = 0;
     this.loadBest();
   }
 
@@ -62,6 +63,7 @@ export class Game {
     this.snapshot = null;
     this.anim = null;
     this.lastCell = null;
+    this.lastRescue = 0;
     this.spawn(2);
     this.spawn(2);
   }
@@ -124,6 +126,32 @@ export class Game {
     return true;
   }
 
+  /* Quita las fichas más pequeñas para no volver a perder al primer movimiento. */
+  clearSmallTiles() {
+    const max = this.maxTile();
+    const smallest = [];
+    for (let r = 0; r < SIZE; r += 1) {
+      for (let c = 0; c < SIZE; c += 1) {
+        const value = this.board[r][c];
+        if (value > 0 && value < max) smallest.push({ r, c, value });
+      }
+    }
+    smallest.sort((a, b) => a.value - b.value);
+
+    const needed = Math.max(0, RESCUE.freeCells - this.emptyCells().length);
+    const count = Math.min(
+      Math.max(needed, RESCUE.removeAtLeast),
+      RESCUE.removeAtMost,
+      smallest.length,
+    );
+    for (let i = 0; i < count; i += 1) {
+      const { r, c } = smallest[i];
+      this.board[r][c] = 0;
+    }
+    this.lastRescue = count;
+    return count;
+  }
+
   revive() {
     if (this.phase !== 'gameover' || !this.snapshot) return false;
     this.board = cloneBoard(this.snapshot.board);
@@ -133,6 +161,7 @@ export class Game {
     this.phase = 'playing';
     this.anim = null;
     this.lastCell = null;
+    this.clearSmallTiles();
     this.sound.play('start');
     return true;
   }

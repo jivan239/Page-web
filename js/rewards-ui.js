@@ -180,7 +180,13 @@
           if (granted === false) {
             setStatus('No se pudo entregar la recompensa.');
           } else {
-            setStatus(type === 'life' ? '¡Vida extra conseguida!' : '¡Recompensa conseguida!');
+            const custom =
+              granted && typeof granted === 'object' && typeof granted.status === 'string'
+                ? granted.status
+                : null;
+            setStatus(
+              custom || (type === 'life' ? '¡Vida extra conseguida!' : '¡Recompensa conseguida!'),
+            );
           }
           render();
         };

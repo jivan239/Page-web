@@ -54,7 +54,9 @@ function claimLife() {
     return false;
   }
   syncRewardUi();
-  return true;
+  return {
+    status: `¡Continuas! Se eliminaron ${game.lastRescue} fichas pequeñas para darte espacio.`,
+  };
 }
 
 function claimBonus() {
@@ -108,6 +110,7 @@ const gameoverTemplate = () => `
     <p class="ov-kicker">Partida terminada</p>
     <h2>Sin movimientos</h2>
     <p class="ov-text">Puntos <b>${game.score}</b> · Récord <b>${game.best}</b> · Ficha máxima <b>${game.maxTile()}</b></p>
+    <p class="ov-text">Continuar con anuncio recupera tu jugada y elimina fichas pequeñas para darte más espacio.</p>
     <button class="btn" type="button" data-action="start">Reintentar</button>
     <button class="btn" type="button" data-action="undo">Deshacer última jugada</button>
     <button class="btn" type="button" data-action="reward-life">Continuar (anuncio)</button>

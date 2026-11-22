@@ -1,6 +1,7 @@
 import {
   COLS,
   ROWS,
+  RESCUE_ROWS,
   TESSERAS,
   TESSERA_TYPES,
   TIMING,
@@ -362,10 +363,10 @@ export class Game {
     onGameOver({ score: this.score, best: this.best, level: this.level, lines: this.lines });
   }
 
-  /* Vida extra: limpia las tres filas superiores y vuelve a spawnar. */
+  /* Vida extra: limpia cinco filas superiores y vuelve a spawnar. */
   reviveWithClear() {
     if (this.phase !== 'gameover') return false;
-    this.clearingRows = [0, 1, 2];
+    this.clearingRows = Array.from({ length: RESCUE_ROWS }, (_, index) => index);
     this.clearTimer = TIMING.clear;
     this.phase = 'clearing';
     this.saveBest();
