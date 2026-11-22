@@ -1,6 +1,8 @@
 /* Lanzador de Freedoom para Playkora.
-   Descarga el IWAD desde el mismo origen y arranca el motor Dwasm
-   (PrBoom+ en WebAssembly) sin scripts inline ni recursos externos. */
+   Descarga el IWAD comprimido con gzip desde el mismo origen, lo descomprime
+   en el navegador y arranca el motor Dwasm (PrBoom+ en WebAssembly).
+   Así cada archivo servido ocupa ~10-11 MB y cumple el límite de 25 MiB
+   de Cloudflare Workers, sin scripts inline ni recursos externos. */
 (() => {
   'use strict';
 
@@ -34,39 +36,53 @@
     statusEl.classList.add('is-error');
   }
 
+  function looksLikeGzip(bytes) {
+    return bytes.length > 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
+  }
+
+  async function inflate(bytes) {
+    if (!looksLikeGzip(bytes)) return bytes;
+    if (typeof DecompressionStream !== 'function') {
+      throw new Error('el navegador no soporta descompresión gzip');
+    }
+    setStatus('Descomprimiendo ' + wadName + '…');
+    const stream = new Blob([bytes]).stream().pipeThrough(new DecompressionStream('gzip'));
+    return new Uint8Array(await new Response(stream).arrayBuffer());
+  }
+
   async function loadWad() {
     setStatus('Descargando ' + wadName + '…');
     const response = await fetch(wadUrl);
     if (!response.ok) throw new Error('HTTP ' + response.status);
 
     const total = Number(response.headers.get('content-length')) || 0;
+    let bytes;
     if (!response.body || !response.body.getReader) {
-      return new Uint8Array(await response.arrayBuffer());
-    }
-
-    const reader = response.body.getReader();
-    const chunks = [];
-    let received = 0;
-    for (;;) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-      received += value.length;
-      if (total > 0) {
-        const pct = Math.min(100, Math.round((received / total) * 100));
-        setStatus('Descargando ' + wadName + '… ' + pct + '%');
-        progressEl.value = pct;
-        progressEl.hidden = false;
+      bytes = new Uint8Array(await response.arrayBuffer());
+    } else {
+      const reader = response.body.getReader();
+      const chunks = [];
+      let received = 0;
+      for (;;) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        chunks.push(value);
+        received += value.length;
+        if (total > 0) {
+          const pct = Math.min(100, Math.round((received / total) * 100));
+          setStatus('Descargando ' + wadName + '… ' + pct + '%');
+          progressEl.value = pct;
+          progressEl.hidden = false;
+        }
+      }
+      bytes = new Uint8Array(received);
+      let offset = 0;
+      for (const chunk of chunks) {
+        bytes.set(chunk, offset);
+        offset += chunk.length;
       }
     }
-
-    const merged = new Uint8Array(received);
-    let offset = 0;
-    for (const chunk of chunks) {
-      merged.set(chunk, offset);
-      offset += chunk.length;
-    }
-    return merged;
+    return inflate(bytes);
   }
 
   function requestPointerLock() {

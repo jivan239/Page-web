@@ -196,7 +196,7 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │       ├── css/freedoom.css       # Intro, estado y lienzo del motor
 │       ├── js/freedoom.js         # Descarga del WAD y arranque de Dwasm
 │       ├── engine/                # PrBoom+ WebAssembly (index.js/.wasm/.data)
-│       ├── wads/                  # freedoom1.wad y freedoom2.wad (28 MB c/u)
+│       ├── wads/                  # freedoom1.wad.gz y freedoom2.wad.gz (~10-11 MB c/u)
 │       ├── portada.jpeg           # Portada de ambas fases y de las tarjetas
 │       └── docs/                  # Licencia y créditos de Freedoom
 ├── Dockerfile                     # nginx:1.27-alpine + validación de config
@@ -214,9 +214,9 @@ El juego se conserva tal cual, pero su `<style>` y `<script>` inline se movieron
 
 ### Sobre Freedoom
 
-Los dos IWAD del paquete `freedoom-0.13.0` se sirven desde `games/freedoom/wads/` y se cargan en el navegador con [Dwasm](https://github.com/GMH-Code/Dwasm), un motor PrBoom+ compilado a WebAssembly. Cada fase tiene su propia ruta y sección en el hub (`/games/freedoom/phase1/` y `/games/freedoom/phase2/`).
+Los dos IWAD del paquete `freedoom-0.13.0` se sirven desde `games/freedoom/wads/` comprimidos con gzip (~10-11 MB cada uno) y se cargan en el navegador con [Dwasm](https://github.com/GMH-Code/Dwasm), un motor PrBoom+ compilado a WebAssembly. Así ningún asset supera el límite de 25 MiB por archivo de Cloudflare Workers. Cada fase tiene su propia ruta y sección en el hub (`/games/freedoom/phase1/` y `/games/freedoom/phase2/`).
 
-`games/freedoom/js/freedoom.js` descarga el WAD del mismo origen, lo escribe en MEMFS y arranca el motor con `-iwad`. No hay CDN, ni scripts inline, ni `eval`: la CSP solo añade `'wasm-unsafe-eval'`, que permite compilar WebAssembly sin habilitar JavaScript dinámico. Los controles táctiles usan `oly.js` cuando el dispositivo es táctil. La portada `games/freedoom/portada.jpeg` se usa tanto en las dos fases como en sus tarjetas del hub.
+`games/freedoom/js/freedoom.js` descarga el WAD comprimido del mismo origen, lo descomprime en el navegador con `DecompressionStream` (si el servidor ya lo descomprimió, detecta la cabecera y lo usa tal cual), lo escribe en MEMFS con su nombre original y arranca el motor con `-iwad`. No hay CDN, ni scripts inline, ni `eval`: la CSP solo añade `'wasm-unsafe-eval'`, que permite compilar WebAssembly sin habilitar JavaScript dinámico. Los controles táctiles usan `oly.js` cuando el dispositivo es táctil. La portada `games/freedoom/portada.jpeg` se usa tanto en las dos fases como en sus tarjetas del hub.
 
 Las rutas del WAD y del motor son relativas, así que el sitio funciona tanto en la raíz de un dominio como en la subcarpeta de GitHub Pages. `.github/workflows/pages.yml` publica `main` en Pages; solo hay que activar una vez **Settings → Pages → Source: GitHub Actions** en el repositorio.
 
