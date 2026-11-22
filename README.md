@@ -455,6 +455,11 @@ Serpiente de Poderes, Prisma Asalto y Bastión Lumen (`--pk-side-rail: 104px`,
 `124px` en Bastión). Mosaico Lunar, 2048 y Asteroids conservan los controles
 abajo. Los enlaces legales quedan fijos en el borde inferior.
 
+La portada (`index.html`) muestra cuatro espacios publicitarios simulados fijos en
+las esquinas, estilizados en `css/hub.css` con las clases `.hub-ads` y `.hub-ad`.
+Permanecen visibles al desplazarse, no interceptan clics y siguen apagados mientras
+`js/ads-config.js` mantenga `enabled: false`: no cargan SDK ni solicitan anuncios.
+
 ### 1. Datos que hay que aportar
 
 - Dominio definitivo (por ejemplo `tu-dominio.com`; evitar subdominios

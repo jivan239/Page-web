@@ -22,7 +22,7 @@ html {
 body {
   margin: 0;
   min-height: 100dvh;
-  padding: clamp(20px, 4vw, 56px) clamp(16px, 4vw, 40px);
+  padding: clamp(84px, 8vw, 96px) clamp(16px, 4vw, 40px);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -65,6 +65,97 @@ body {
 
 .fx--vignette {
   background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.5) 100%);
+}
+
+/* ---------- Espacios publicitarios fijos en las esquinas ---------- */
+
+.hub-ads {
+  position: fixed;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.hub-ad {
+  position: absolute;
+  display: grid;
+  place-content: center;
+  gap: 2px;
+  width: clamp(92px, 10vw, 136px);
+  min-height: 58px;
+  padding: 14px 8px 8px;
+  overflow: hidden;
+  border: 1px dashed rgba(122, 214, 255, 0.42);
+  border-radius: 10px;
+  background:
+    radial-gradient(circle at 50% 0%, rgba(90, 210, 255, 0.12), transparent 70%),
+    rgba(6, 12, 28, 0.86);
+  box-shadow: 0 14px 34px -20px rgba(0, 0, 0, 0.95);
+  text-align: center;
+}
+
+.hub-ad::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    135deg,
+    transparent 0 10px,
+    rgba(255, 255, 255, 0.025) 10px 11px
+  );
+}
+
+.hub-ad--tl {
+  top: 12px;
+  left: 12px;
+}
+
+.hub-ad--tr {
+  top: 12px;
+  right: 12px;
+}
+
+.hub-ad--bl {
+  bottom: 12px;
+  left: 12px;
+}
+
+.hub-ad--br {
+  bottom: 12px;
+  right: 12px;
+}
+
+.hub-ad__text,
+.hub-ad__hint {
+  position: relative;
+  z-index: 1;
+}
+
+.hub-ad__label {
+  position: absolute;
+  top: 4px;
+  left: 7px;
+  z-index: 1;
+  color: #7ad6ff;
+  font-family: var(--font-display);
+  font-size: 7px;
+  font-weight: 700;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hub-ad__text {
+  color: rgba(234, 246, 255, 0.86);
+  font-family: var(--font-display);
+  font-size: 9px;
+  line-height: 1.2;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.hub-ad__hint {
+  color: rgba(234, 246, 255, 0.5);
+  font-size: 8px;
 }
 
 .hub {
@@ -603,6 +694,53 @@ kbd {
 }
 
 @media (max-width: 680px) {
+  body {
+    padding-top: 58px;
+    padding-bottom: 58px;
+  }
+
+  .hub-ad {
+    width: 88px;
+    min-height: 44px;
+    padding: 12px 5px 5px;
+  }
+
+  .hub-ad--tl,
+  .hub-ad--tr {
+    top: 6px;
+  }
+
+  .hub-ad--bl,
+  .hub-ad--br {
+    bottom: 6px;
+  }
+
+  .hub-ad--tl,
+  .hub-ad--bl {
+    left: 6px;
+  }
+
+  .hub-ad--tr,
+  .hub-ad--br {
+    right: 6px;
+  }
+
+  .hub-ad__label {
+    top: 2px;
+    left: 4px;
+    font-size: 6px;
+    letter-spacing: 0.1em;
+  }
+
+  .hub-ad__text {
+    font-size: 7px;
+    letter-spacing: 0;
+  }
+
+  .hub-ad__hint {
+    display: none;
+  }
+
   .catalog {
     grid-template-columns: minmax(0, 1fr);
   }
