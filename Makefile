@@ -31,6 +31,8 @@ check:
 	curl -fsSI http://localhost:$(PORT)/games/bastion-lumen/ | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/phase1/ | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/phase2/ | head -n 1
+	curl -fsSI http://localhost:$(PORT)/games/2048/ | head -n 1
+	curl -fsSI http://localhost:$(PORT)/games/asteroids/ | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/wads/freedoom1.wad.gz | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/wads/freedoom2.wad.gz | head -n 1
 	curl -fsSI http://localhost:$(PORT)/games/freedoom/portada.jpeg | head -n 1

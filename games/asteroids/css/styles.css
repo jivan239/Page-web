@@ -1,0 +1,249 @@
+/* Asteroids en Playkora: HUD, escenario y overlays. */
+
+:root {
+  --g-bg: #05060f;
+  --g-panel: rgba(15, 21, 38, 0.94);
+  --g-line: rgba(140, 170, 230, 0.22);
+  --g-text: #e8eefc;
+  --g-muted: #9ba9c8;
+  --g-gold: #ffd479;
+  --g-font: system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+body {
+  color: var(--g-text);
+  font-family: var(--g-font);
+}
+
+.shell {
+  width: 100%;
+}
+
+.appnav {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px 12px;
+  font-size: 12px;
+}
+
+.appnav a {
+  color: var(--g-gold);
+  text-decoration: none;
+}
+
+.appnav__label {
+  color: var(--g-muted);
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.machine {
+  width: 100%;
+}
+
+.machine__top {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 6px;
+}
+
+.brand h1 {
+  margin: 0;
+  font-size: clamp(22px, 4vw, 34px);
+  line-height: 1;
+  letter-spacing: 0.06em;
+}
+
+.tagline {
+  margin: 2px 0 0;
+  color: var(--g-muted);
+  font-size: 11px;
+}
+
+.hud {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 6px;
+  margin-bottom: 6px;
+}
+
+.stat {
+  display: grid;
+  gap: 1px;
+  padding: 6px 4px;
+  border: 1px solid var(--g-line);
+  border-radius: 8px;
+  background: var(--g-panel);
+  text-align: center;
+}
+
+.stat .label {
+  color: var(--g-muted);
+  font-size: 9px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.stat .value {
+  font-variant-numeric: tabular-nums;
+  font-size: clamp(14px, 2.2vw, 19px);
+  font-weight: 700;
+}
+
+.stage {
+  position: relative;
+  width: 100%;
+  border: 1px solid var(--g-line);
+  border-radius: 12px;
+  background: radial-gradient(circle at 50% 30%, rgba(111, 233, 255, 0.08), transparent 70%), #05060f;
+  overflow: hidden;
+}
+
+canvas {
+  display: block;
+  border-radius: 12px;
+  touch-action: none;
+}
+
+.hint {
+  margin: 5px 0 0;
+  color: var(--g-muted);
+  font-size: 10px;
+  text-align: center;
+}
+
+kbd {
+  padding: 1px 4px;
+  border: 1px solid var(--g-line);
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.04);
+  font: inherit;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 14px;
+  background: rgba(4, 6, 15, 0.82);
+  backdrop-filter: blur(3px);
+}
+
+.overlay.is-open {
+  display: flex;
+}
+
+.panel {
+  width: min(100%, 440px);
+  padding: clamp(14px, 3vw, 26px);
+  border: 1px solid var(--g-line);
+  border-radius: 14px;
+  background: var(--g-panel);
+  text-align: center;
+}
+
+.ov-kicker {
+  margin: 0 0 6px;
+  color: var(--g-gold);
+  font-size: 9px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+}
+
+.panel h2 {
+  margin: 0 0 8px;
+  font-size: clamp(24px, 5vw, 38px);
+  line-height: 1;
+}
+
+.ov-text {
+  margin: 0 0 10px;
+  color: var(--g-muted);
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.ov-legend {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 14px;
+  padding: 0;
+  list-style: none;
+  color: var(--g-muted);
+  font-size: 11px;
+}
+
+.btn {
+  width: 100%;
+  margin: 4px 0;
+  padding: 10px 14px;
+  border: 1px solid var(--g-line);
+  border-radius: 9px;
+  background: rgba(111, 233, 255, 0.10);
+  color: var(--g-text);
+  font: 700 11px/1 var(--g-font);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+
+.btn:hover:not(:disabled) {
+  border-color: var(--g-gold);
+}
+
+.btn:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 6px;
+}
+
+.pad {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.pad button,
+.icon-btn {
+  min-height: 42px;
+  border: 1px solid var(--g-line);
+  border-radius: 9px;
+  background: rgba(111, 233, 255, 0.10);
+  color: var(--g-text);
+  font: 700 16px/1 var(--g-font);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+}
+
+.pad button:hover:not(:disabled),
+.icon-btn:hover:not(:disabled) {
+  border-color: var(--g-gold);
+}
+
+.icon-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+@media (max-width: 520px) {
+  .hud {
+    gap: 4px;
+  }
+
+  .stat {
+    padding: 5px 3px;
+  }
+}

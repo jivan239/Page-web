@@ -247,6 +247,20 @@ body {
   animation-delay: 0.56s;
 }
 
+.card--2048 {
+  --accent-card: #ffd479;
+  --art-glow: rgba(255, 212, 121, 0.24);
+  --art-glow-2: rgba(143, 182, 255, 0.16);
+  animation-delay: 0.64s;
+}
+
+.card--asteroids {
+  --accent-card: #6fe9ff;
+  --art-glow: rgba(111, 233, 255, 0.24);
+  --art-glow-2: rgba(200, 166, 255, 0.16);
+  animation-delay: 0.72s;
+}
+
 .card:hover {
   transform: translateY(-5px);
   border-color: color-mix(in srgb, var(--accent-card) 55%, transparent);
@@ -471,6 +485,16 @@ body {
 .card--freedoom2 .card__cta {
   border-color: rgba(200, 166, 255, 0.38);
   background: linear-gradient(180deg, rgba(52, 30, 72, 0.78), rgba(20, 12, 30, 0.95));
+}
+
+.card--2048 .card__cta {
+  border-color: rgba(255, 212, 121, 0.38);
+  background: linear-gradient(180deg, rgba(66, 48, 18, 0.78), rgba(28, 20, 8, 0.95));
+}
+
+.card--asteroids .card__cta {
+  border-color: rgba(111, 233, 255, 0.38);
+  background: linear-gradient(180deg, rgba(16, 58, 72, 0.78), rgba(8, 26, 34, 0.95));
 }
 
 .card:hover .card__cta {

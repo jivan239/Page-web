@@ -6,7 +6,7 @@
     <meta name="theme-color" content="#05060f" />
     <meta
       name="description"
-      content="Playkora: cinco juegos originales y dos clásicos Freedoom, servidos desde un contenedor Docker con Nginx."
+      content="Playkora: cinco creaciones originales y cuatro clásicos jugables en el navegador, servidos desde un contenedor Docker con Nginx."
     />
     <title>Playkora</title>
     <link rel="icon" href="favicon.svg" type="image/svg+xml" />
@@ -24,16 +24,16 @@
       <header class="hero">
         <p class="hero__eyebrow">
           <span class="hero__dot" aria-hidden="true"></span>
-          Salón recreativo · 7 máquinas en línea
+          Salón recreativo · 9 máquinas en línea
         </p>
         <h1 class="hero__title">Play<span>kora</span></h1>
         <p class="hero__text">
-          Cinco juegos originales y dos clásicos Freedoom, servidos desde el
+          Cinco creaciones originales y cuatro clásicos, servidos desde el
           mismo contenedor. Sin instalaciones: elige una máquina y pulsa jugar.
           Consigue vidas extra y recompensas viendo anuncios opcionales.
         </p>
         <dl class="hero__meta">
-          <div><dt>Juegos</dt><dd>07</dd></div>
+          <div><dt>Juegos</dt><dd>09</dd></div>
           <div><dt>Offline</dt><dd>100%</dd></div>
           <div><dt>Contenedor</dt><dd>01</dd></div>
         </dl>
@@ -485,12 +485,140 @@
             <span class="card__cta">Jugar <span aria-hidden="true">→</span></span>
           </div>
         </a>
+
+        <a
+          class="card card--2048"
+          href="games/2048/"
+          data-game="8"
+          aria-keyshortcuts="8"
+        >
+          <div class="card__art" aria-hidden="true">
+            <svg class="art art--2048" viewBox="0 0 320 150" focusable="false">
+              <defs>
+                <filter id="glow2048" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="2.6" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <g filter="url(#glow2048)">
+                <rect x="36" y="12" width="60" height="60" rx="12" fill="#26365c" />
+                <text x="66" y="52" font-family="system-ui, sans-serif" font-size="34" font-weight="700" fill="#dbe7ff" text-anchor="middle">2</text>
+
+                <rect x="106" y="12" width="60" height="60" rx="12" fill="#2c4f7c" />
+                <text x="136" y="52" font-family="system-ui, sans-serif" font-size="34" font-weight="700" fill="#e8f3ff" text-anchor="middle">4</text>
+
+                <rect x="176" y="12" width="60" height="60" rx="12" fill="#2f8f8f" />
+                <text x="206" y="52" font-family="system-ui, sans-serif" font-size="34" font-weight="700" fill="#eafffb" text-anchor="middle">8</text>
+
+                <rect x="246" y="12" width="60" height="60" rx="12" fill="#3f9f64" />
+                <text x="276" y="52" font-family="system-ui, sans-serif" font-size="30" font-weight="700" fill="#f0fff4" text-anchor="middle">16</text>
+
+                <rect x="36" y="82" width="60" height="60" rx="12" fill="#b58a37" />
+                <text x="66" y="122" font-family="system-ui, sans-serif" font-size="32" font-weight="700" fill="#fff8dd" text-anchor="middle">64</text>
+
+                <rect x="106" y="82" width="60" height="60" rx="12" fill="#a3427f" />
+                <text x="136" y="122" font-family="system-ui, sans-serif" font-size="28" font-weight="700" fill="#fff0fa" text-anchor="middle">512</text>
+
+                <rect x="176" y="82" width="60" height="60" rx="12" fill="#6f4fbf" />
+                <text x="206" y="120" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#f4efff" text-anchor="middle">1024</text>
+
+                <rect x="246" y="82" width="60" height="60" rx="12" fill="#d9a72c" />
+                <text x="276" y="120" font-family="system-ui, sans-serif" font-size="22" font-weight="700" fill="#2a1a00" text-anchor="middle">2048</text>
+              </g>
+            </svg>
+          </div>
+
+          <div class="card__body">
+            <p class="card__index">08 <span>/</span> Clásico</p>
+            <h2 class="card__title">2048</h2>
+            <p class="card__text">
+              Desliza fichas en un tablero 4×4: dos iguales se fusionan y suman
+              su valor. Deshacer, pausa y una ficha extra opcional para llegar
+              más lejos.
+            </p>
+            <ul class="tags" aria-label="Características">
+              <li>Teclado</li>
+              <li>Táctil</li>
+              <li>Récord local</li>
+            </ul>
+            <span
+              class="card__best"
+              data-best-key="dosMil48:best"
+              data-best-label="Récord"
+              hidden
+            ></span>
+            <span class="card__cta">Jugar <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
+
+        <a
+          class="card card--asteroids"
+          href="games/asteroids/"
+          data-game="9"
+          aria-keyshortcuts="9"
+        >
+          <div class="card__art" aria-hidden="true">
+            <svg class="art art--asteroids" viewBox="0 0 320 150" focusable="false">
+              <defs>
+                <filter id="glowAsteroids" x="-30%" y="-30%" width="160%" height="160%">
+                  <feGaussianBlur stdDeviation="2.4" result="blur" />
+                  <feMerge>
+                    <feMergeNode in="blur" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
+
+              <g filter="url(#glowAsteroids)">
+                <path d="M162 24 L202 106 L162 90 L122 106 Z" fill="#6fe9ff" opacity=".95" />
+                <path d="M162 24v66l-40 16Z" fill="#3fa8c9" />
+                <path d="M148 96l14 34 14-34-14 8Z" fill="#ffb066" />
+
+                <path d="M54 26l17-8 14 9 4 15-12 13-17-2-10-13Z" fill="none" stroke="#c8d6f5" stroke-width="3" />
+                <path d="M238 18l14 4 8 13-7 14-16 3-11-11 3-15Z" fill="none" stroke="#c8a6ff" stroke-width="3" />
+                <path d="M252 92l13-5 14 8 1 14-12 10-16-3-6-12Z" fill="none" stroke="#c8d6f5" stroke-width="3" />
+                <path d="M46 100l11-3 9 7-2 12-11 6-9-7Z" fill="none" stroke="#c8a6ff" stroke-width="3" />
+
+                <circle cx="100" cy="58" r="2" fill="#fff8e0" />
+                <circle cx="224" cy="126" r="2" fill="#fff8e0" />
+                <circle cx="292" cy="70" r="1.6" fill="#fff8e0" opacity=".7" />
+                <circle cx="24" cy="72" r="1.6" fill="#fff8e0" opacity=".7" />
+              </g>
+            </svg>
+          </div>
+
+          <div class="card__body">
+            <p class="card__index">09 <span>/</span> Clásico</p>
+            <h2 class="card__title">Asteroids</h2>
+            <p class="card__text">
+              Gira, empuja y dispara en el espacio. Los asteroides grandes se
+              parten en otros dos: sobrevive a las oleadas con vidas, escudos
+              y salto hiperespacial.
+            </p>
+            <ul class="tags" aria-label="Características">
+              <li>Teclado</li>
+              <li>Táctil</li>
+              <li>Récord local</li>
+            </ul>
+            <span
+              class="card__best"
+              data-best-key="asteroides:best"
+              data-best-label="Récord"
+              hidden
+            ></span>
+            <span class="card__cta">Jugar <span aria-hidden="true">→</span></span>
+          </div>
+        </a>
       </section>
 
       <footer class="footer">
         <span class="footer__status"><i aria-hidden="true"></i> Servidor listo</span>
-        <span class="footer__note">Prisma Asalto · Serpiente · Cazaluces · Mosaico Lunar · Bastión Lumen · Freedoom 1 · Freedoom 2</span>
-        <span class="footer__keys">Atajos <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><kbd>5</kbd><kbd>6</kbd><kbd>7</kbd></span>
+        <span class="footer__note">Prisma Asalto · Serpiente · Cazaluces · Mosaico Lunar · Bastión Lumen · Freedoom 1 · Freedoom 2 · 2048 · Asteroids</span>
+        <span class="footer__keys">Atajos <kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd><kbd>5</kbd><kbd>6</kbd><kbd>7</kbd><kbd>8</kbd><kbd>9</kbd></span>
         <nav class="legal-links" aria-label="Información legal">
           <a href="novedades.html">Novedades</a>
           <a href="privacidad.html">Privacidad</a>

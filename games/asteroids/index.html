@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="theme-color" content="#05060f" />
+    <meta
+      name="description"
+      content="Asteroids en Playkora: pilota tu nave, dispara y parte asteroides en este clásico del espacio jugable en el navegador."
+    />
+    <title>Asteroids · Playkora</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+    <link rel="stylesheet" href="css/styles.css" />
+    <link rel="stylesheet" href="../../css/consent.css" />
+    <link rel="stylesheet" href="../../css/rewards.css" />
+    <link rel="stylesheet" href="../../css/playfield.css" />
+    <script src="../../js/ads-config.js"></script>
+    <script src="../../js/consent.js"></script>
+  </head>
+  <body>
+    <div class="pk-playfield pk-playfield--asteroids">
+      <div class="pk-ad-host" id="pkAdHost"></div>
+
+      <div class="pk-main">
+        <main class="shell">
+          <nav class="appnav" aria-label="Navegación entre juegos">
+            <a class="appnav__back" href="../../">&larr; Playkora</a>
+            <span class="appnav__label">09 &middot; Asteroids</span>
+          </nav>
+
+          <section class="machine" aria-label="Máquina de Asteroids">
+            <header class="machine__top">
+              <div class="brand">
+                <h1>Asteroids</h1>
+                <p class="tagline">Gira · empuja · dispara</p>
+              </div>
+            </header>
+
+            <section class="hud" aria-label="Marcadores">
+              <div class="stat">
+                <span class="label">Puntos</span>
+                <span class="value" id="score" aria-live="polite">0</span>
+              </div>
+              <div class="stat">
+                <span class="label">Récord</span>
+                <span class="value" id="best" aria-live="polite">0</span>
+              </div>
+              <div class="stat">
+                <span class="label">Vidas</span>
+                <span class="value" id="lives">3</span>
+              </div>
+              <div class="stat">
+                <span class="label">Nivel</span>
+                <span class="value" id="level">1</span>
+              </div>
+              <div class="stat">
+                <span class="label">Escudo</span>
+                <span class="value" id="shield">&mdash;</span>
+              </div>
+            </section>
+
+            <div class="stage">
+              <canvas
+                id="game"
+                width="960"
+                height="720"
+                role="img"
+                aria-label="Campo de juego de Asteroids"
+              ></canvas>
+              <div class="overlay" id="overlay" role="dialog" aria-live="polite"></div>
+            </div>
+
+            <p class="hint">
+              <kbd>&larr;</kbd><kbd>&rarr;</kbd> girar · <kbd>&uarr;</kbd> empujar ·
+              <kbd>Espacio</kbd> disparar · <kbd>Mayús</kbd> hiperespacio ·
+              <kbd>R</kbd> reiniciar · <kbd>P</kbd> pausa · <kbd>M</kbd> sonido
+            </p>
+          </section>
+        </main>
+      </div>
+
+      <aside class="pk-rail pk-rail--controls" aria-label="Controles de Asteroids">
+        <div class="actions">
+          <button class="icon-btn" type="button" id="soundBtn" aria-label="Silenciar sonido" title="Sonido (M)">&#128266;</button>
+          <button class="icon-btn" type="button" id="pauseBtn" aria-label="Pausar el juego" title="Pausa (P)" disabled>&#10074;&#10074;</button>
+        </div>
+        <div class="pad" aria-label="Controles táctiles">
+          <button type="button" data-act="left" aria-label="Girar a la izquierda">&#8634;</button>
+          <button type="button" data-act="thrust" aria-label="Empujar nave">&#9650;</button>
+          <button type="button" data-act="right" aria-label="Girar a la derecha">&#8635;</button>
+          <button type="button" data-act="fire" aria-label="Disparar">&#9679;</button>
+        </div>
+      </aside>
+    </div>
+
+    <nav class="legal-links" aria-label="Información legal">
+      <a href="../../privacidad.html">Privacidad</a>
+      <a href="../../cookies.html">Cookies</a>
+      <a href="../../aviso-legal.html">Aviso legal</a>
+      <a href="../../sobre-nosotros.html">Sobre nosotros</a>
+      <a href="../../novedades.html">Novedades</a>
+      <a href="../../contacto.html">Contacto</a>
+      <button type="button" data-consent-open>Configurar cookies</button>
+    </nav>
+
+    <script src="../../js/rewards-ui.js"></script>
+    <script type="module" src="js/main.js"></script>
+    <script src="../../js/ads.js"></script>
+  </body>
+</html>

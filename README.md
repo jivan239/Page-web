@@ -1,16 +1,18 @@
 # Playkora · Docker + Web
 
-Hub arcade con cinco juegos originales y dos clásicos Freedoom jugables en el navegador:
+Hub arcade con cinco juegos originales y cuatro clásicos jugables en el navegador:
 
 - **Prisma Asalto** — shooter de cristales con oleadas, escudos destructibles y un orbe errante.
 - **Serpiente de Poderes** — snake con manzanas de poder, trampas, combos y revive con fantasma.
 - **Cazaluces** — laberinto original con Chispa, cuatro sombras, sus cuatro estados y sus personalidades de IA.
 - **Mosaico Lunar** — puzzle de teselas que caen, con pieza fantasma, reserva y siete formas propias.
 - **Bastión Lumen** — tower defense con circuito curvo, tres torretas, mejoras, jefes cada cinco oleadas y recompensas simuladas.
-- **Freedoom Phase 1** (`freedoom1.wad`) — nueve mapas y tres episodios del primer capítulo de Freedom.
-- **Freedoom Phase 2** (`freedoom2.wad`) — treinta y dos mapas y jefes, la continuación de Freedom.
+- **2048** — clásico de fusiones en un tablero 4×4, con deshacer, pausa y ficha extra opcional.
+- **Asteroids** — clásico espacial con nave, disparos, asteroides que se parten, niveles, vidas, escudo y salto hiperespacial.
+- **Freedoom Phase 1** (`freedoom1.wad.gz`) — nueve mapas y tres episodios del primer capítulo de Freedom.
+- **Freedoom Phase 2** (`freedoom2.wad.gz`) — treinta y dos mapas y jefes, la continuación de Freedom.
 
-Los cinco juegos originales son HTML5 Canvas + JavaScript sin dependencias. Los dos clásicos usan el motor Dwasm (PrBoom+ compilado a WebAssembly) con los WAD servidos desde el mismo contenedor. Todo se sirve con Nginx desde Docker.
+Los cinco juegos originales y los dos clásicos ligeros (2048 y Asteroids) son HTML5 Canvas + JavaScript sin dependencias. Los dos Freedoom usan el motor Dwasm (PrBoom+ compilado a WebAssembly) con los WAD servidos desde el mismo contenedor. Todo se sirve con Nginx desde Docker.
 
 ## Arranque rápido
 
@@ -50,6 +52,8 @@ docker compose ps
 | `/games/cazaluces/` | Cazaluces |
 | `/games/mosaico-lunar/` | Mosaico Lunar |
 | `/games/bastion-lumen/` | Bastión Lumen |
+| `/games/2048/` | 2048 |
+| `/games/asteroids/` | Asteroids |
 | `/games/freedoom/phase1/` | Freedoom Phase 1 (Freedoom 1) |
 | `/games/freedoom/phase2/` | Freedoom Phase 2 (Freedoom 2) |
 | `/serpiente-poderes.html` | Redirección compatible con la ruta antigua |
@@ -112,7 +116,31 @@ docker compose ps
 | Recompensa simulada | — | Botón **Recompensa** (2 por partida) |
 | Empezar / reintentar | `Enter` o `Espacio` | Botón del overlay |
 
-En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada juego.
+### 2048
+
+| Acción | Teclado | Táctil |
+| --- | --- | --- |
+| Mover fichas | Flechas o `W` `A` `S` `D` | Deslizar sobre el tablero o botones direccionales |
+| Deshacer jugada | `Z` u `U` | Botón ↶ |
+| Pausa | `P` o `Esc` | Botón **II** |
+| Nueva partida | `N` | Botón ↻ |
+| Sonido on/off | `M` | Botón del altavoz |
+| Empezar / reintentar | `Enter` o `Espacio` | Botón del overlay |
+
+### Asteroids
+
+| Acción | Teclado | Táctil |
+| --- | --- | --- |
+| Girar | `←` `→` o `A` `D` | Botones ↶ ↷ |
+| Empujar | `↑` o `W` | Botón ▲ |
+| Disparar | `Espacio` | Botón ● |
+| Salto hiperespacial | `Mayús` | — |
+| Pausa | `P` o `Esc` | Botón **II** |
+| Reiniciar | `R` | Botón del overlay |
+| Sonido on/off | `M` | Botón del altavoz |
+| Empezar / reintentar | `Enter` o `Espacio` | Botón del overlay |
+
+En el hub puedes pulsar del `1` al `9` para entrar directamente a cada juego.
 
 ## Estructura
 
@@ -136,7 +164,7 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │   ├── legal.css                  # Estilos de las páginas informativas
 │   └── novedades.css              # Entradas de la sección de novedades
 ├── js/
-│   ├── hub.js                     # Fondo animado y atajos 1–7
+│   ├── hub.js                     # Fondo animado y atajos 1–9
 │   ├── ads-config.js              # Estado de monetización y ca-pub
 │   ├── consent.js                 # Consent Mode v2 + banner
 │   └── ads.js                     # Cargador de Auto ads (desactivado por defecto)
@@ -190,6 +218,26 @@ En el hub puedes pulsar `1`, `2`, `3`, `4` o `5` para entrar directamente a cada
 │           ├── audio.js           # SFX sintetizados (Web Audio)
 │           ├── config.js          # Mapa, tablas de torres, oleadas y storage
 │           └── monetization.js    # Hooks onGameOver() / onRewardAction()
+│   ├── 2048/
+│   │   ├── index.html
+│   │   ├── favicon.svg
+│   │   ├── css/styles.css         # Tablero, HUD, pad táctil y overlays
+│   │   └── js/
+│   │       ├── main.js            # Entrada, controles, HUD y overlays
+│   │       ├── game.js            # Fusiones, puntuación, deshacer y game over
+│   │       ├── render.js          # Fichas animadas en canvas
+│   │       ├── audio.js           # SFX sintetizados (Web Audio)
+│   │       └── config.js          # Paleta, tamaño y claves de storage
+│   ├── asteroids/
+│   │   ├── index.html
+│   │   ├── favicon.svg
+│   │   ├── css/styles.css         # HUD, escenario, pad táctil y overlays
+│   │   └── js/
+│   │       ├── main.js            # Entrada, controles, HUD y overlays
+│   │       ├── game.js            # Nave, disparos, asteroides, vidas y niveles
+│   │       ├── render.js          # Estrellas, nave, asteroides y partículas
+│   │       ├── audio.js           # SFX sintetizados (Web Audio)
+│   │       └── config.js          # Física, puntuación y claves de storage
 │   └── freedoom/
 │       ├── phase1/index.html      # Pantalla de Freedoom Phase 1
 │       ├── phase2/index.html      # Pantalla de Freedoom Phase 2
@@ -276,6 +324,22 @@ Freedoom se distribuye bajo licencia BSD; el motor Dwasm es GPL-2.0. Los textos 
 - Hasta 2 recompensas simuladas por partida (+100 oro o reparar +30 HP) pasando siempre por `onRewardAction(type)`.
 - Pantalla de fin de partida con oleadas superadas, enemigos derrotados y **Reintentar** inmediato; el intersticial futuro se conecta en `onGameOver()`.
 
+**2048**
+
+- Tablero 4×4: dos fichas iguales que se juntan se fusionan y suman su valor; después de cada jugada aparece un 2 (90 %) o un 4 (10 %).
+- `Z` deshace la última jugada, `N` empieza de cero y `P` pausa. La partida también se pausa al cambiar de pestaña.
+- Se puede seguir jugando después de alcanzar 2048. La partida termina solo cuando no quedan movimientos.
+- Récord persistente en `localStorage` (`dosMil48:best`) y mute en `dosMil48:muted`.
+- Recompensas simuladas: recuperar la última jugada (continuar) o añadir una ficha 4.
+
+**Asteroids**
+
+- La nave gira, empuja con inercia y dispara; los asteroides grandes se parten en dos medianos y estos en dos pequeños (20 / 50 / 100 puntos).
+- Cada nivel añade asteroides y los bordes son envolventes. Tres vidas, 2 s de invulnerabilidad al reaparecer y escudo de 8 s como recompensa.
+- `Mayús` manda la nave a un punto aleatorio del campo con 1,2 s de invulnerabilidad; `R` reinicia y `P` pausa.
+- Récord persistente en `localStorage` (`asteroides:best`) y mute en `asteroides:muted`.
+- Recompensa simulada al perder: reanudar con una nave y escudo inicial.
+
 ## Desarrollo sin Docker
 
 Cualquier servidor estático funciona, pero **debe** servirse por HTTP porque hay módulos ES; abrir los HTML con `file://` no es válido.
@@ -300,6 +364,9 @@ En Bastión Lumen, `?debug` expone `window.__bastion` (partida, torretas, enemig
 http://localhost:8080/games/bastion-lumen/?debug
 ```
 
+En 2048, `?debug` expone `window.__dosMil48` (tablero, puntuación y fase). En
+Asteroids expone `window.__asteroides` (nave, asteroides, vidas y nivel).
+
 ## Personalización
 
 - Hub: `index.html`, `css/hub.css` y `js/hub.js`.
@@ -308,6 +375,8 @@ http://localhost:8080/games/bastion-lumen/?debug
 - Cazaluces: mapa y objetivos de dispersión en `games/cazaluces/js/config.js`; IA, estados y velocidades en `games/cazaluces/js/game.js`; estilo en `games/cazaluces/css/styles.css`.
 - Mosaico Lunar: teselas, paleta y puntuación en `games/mosaico-lunar/js/config.js`; gravedad y reglas en `games/mosaico-lunar/js/game.js`; estilo en `games/mosaico-lunar/css/styles.css`.
 - Bastión Lumen: circuito, celdas, torretas y oleadas en `games/bastion-lumen/js/config.js`; economía y combate en `games/bastion-lumen/js/game.js`; puntos de anuncios en `games/bastion-lumen/js/monetization.js`; estilo en `games/bastion-lumen/css/styles.css`.
+- 2048: paleta, tamaño y storage en `games/2048/js/config.js`; reglas de fusión en `games/2048/js/game.js`; estilo en `games/2048/css/styles.css`.
+- Asteroids: física, puntuación y storage en `games/asteroids/js/config.js`; colisiones y oleadas en `games/asteroids/js/game.js`; estilo en `games/asteroids/css/styles.css`.
 - Puerto publicado: `APP_PORT` o `ports` en `docker-compose.yml`.
 
 Tras cambiar archivos estáticos en la imagen:
@@ -326,9 +395,9 @@ docker compose up -d --build
 - `HEALTHCHECK` consulta `/healthz`.
 - Recursos 100 % locales: sin CDN, sin fuentes externas, funciona offline tras el primer arranque.
 
-`novedades.html` recoge los cambios recientes (poderes de Serpiente, riel
-lateral de controles y récord visible en el salón) con entradas breves y
-enlaces al resto del sitio.
+`novedades.html` recoge los cambios recientes (2048 y Asteroids, Freedoom,
+poderes de Serpiente, riel lateral de controles y récord visible en el salón)
+con entradas breves y enlaces al resto del sitio.
 
 ## Monetización con Google AdSense (preparada, desactivada)
 
@@ -339,7 +408,7 @@ enlaces canónicos y un `nginx.ads.conf` con la CSP compatible con Google.
 **Estado actual:** `window.PLAYKORA_ADS.enabled` es `false` y el publicador es un
 marcador (`ca-pub-0000000000000000`). No se pide ningún anuncio en local.
 
-Los cinco juegos comparten los dos puntos centralizados para conectar la
+Los siete juegos ligeros comparten los dos puntos centralizados para conectar la
 monetización, en `js/monetization.js`: `onGameOver()` (intersticial al perder,
 sin bloquear el resumen) y `onRewardAction(type)` (puerta del anuncio
 recompensado; la recompensa solo se entrega si devuelve `true`). La capa visual
@@ -352,11 +421,12 @@ independientemente del juego.
 
 ### Recompensas por juego
 
-Las cinco máquinas muestran un espacio publicitario señalizado y una barra con
+Las siete máquinas ligeras muestran un espacio publicitario señalizado y una barra con
 los botones **Vida extra (anuncio)** (2 usos por partida) y un segundo botón de
 recompensa (1 uso). En Prisma Asalto, Serpiente, Cazaluces y Mosaico Lunar el
 botón de vida también aparece en la pantalla de fin de partida; en Bastión Lumen
-la "vida extra" repara el núcleo durante la partida.
+la "vida extra" repara el núcleo durante la partida. En 2048 recupera la última
+jugada y en Asteroids reanuda con una nave y escudo.
 
 | Juego | Vida extra (máx. 2) | Recompensa adicional (1) |
 | --- | --- | --- |
@@ -365,6 +435,8 @@ la "vida extra" repara el núcleo durante la partida.
 | Cazaluces | Revivir con 1 vida | Asustar sombras |
 | Mosaico Lunar | Limpiar 3 filas superiores y reanudar | Tesela Vara al frente de la cola |
 | Bastión Lumen | Reparar núcleo +30 HP | +100 oro |
+| 2048 | Recuperar la última jugada | Ficha 4 extra |
+| Asteroids | Reanudar con 1 nave y escudo | Escudo 8 s |
 
 El espacio, los botones y el modal del anuncio simulado están en
 `css/rewards.css` y `js/rewards-ui.js`. El efecto solo se entrega si
@@ -380,8 +452,8 @@ derecha. En teléfono el anuncio pasa a una franja superior y los controles a un
 riel lateral estrecho; los botones se reducen de tamaño y el tablero se encoge lo
 necesario para que nada quede encimado. Este riel se aplica a Cazaluces,
 Serpiente de Poderes, Prisma Asalto y Bastión Lumen (`--pk-side-rail: 104px`,
-`124px` en Bastión). Mosaico Lunar conserva los controles abajo. Los enlaces
-legales quedan fijos en el borde inferior.
+`124px` en Bastión). Mosaico Lunar, 2048 y Asteroids conservan los controles
+abajo. Los enlaces legales quedan fijos en el borde inferior.
 
 ### 1. Datos que hay que aportar
 

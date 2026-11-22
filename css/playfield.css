@@ -98,6 +98,14 @@ body {
   --pk-stage-ratio: 720 / 560;
   --pk-stage-reserve: 280px;
 }
+.pk-playfield--2048 {
+  --pk-stage-ratio: 1 / 1;
+  --pk-stage-reserve: 230px;
+}
+.pk-playfield--asteroids {
+  --pk-stage-ratio: 4 / 3;
+  --pk-stage-reserve: 230px;
+}
 
 .pk-main .screen,
 .pk-main .stage {
